@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "778973107038",
+    "firebase_url": "https://myevernoteapp-41d9e.firebaseio.com",
+    "project_id": "myevernoteapp-41d9e",
+    "storage_bucket": "myevernoteapp-41d9e.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:778973107038:android:ae429655fc53c03a0475cf",
+        "android_client_info": {
+          "package_name": "com.example.mydiaryapplication"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "778973107038-7b2gl14r4k14fa25pa8busvu7bl6phpp.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.mydiaryapplication",
+            "certificate_hash": "84f5975ab509d1a13cb80242940cff5d2426c304"
+          }
+        },
+        {
+          "client_id": "778973107038-ml77h6op6q1moksmc24rmngf7vr8gbh6.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCIi5MJjJxndeXE7YvYEXeKMb9ynyOr5ZA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "778973107038-ml77h6op6q1moksmc24rmngf7vr8gbh6.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

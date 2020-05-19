@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">MyDiaryApplication</string>
+
+    <string name="detail_date">今日の日付</string>
 </resources>
