@@ -4,6 +4,8 @@ import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuItem
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.android.synthetic.main.activity_list.*
 
@@ -14,6 +16,12 @@ class ListActivity : AppCompatActivity() {
         setContentView(R.layout.activity_list)
 
         setupUI()
+
+        floatingButton.setOnClickListener {
+
+            val intent = Intent(this@ListActivity, EditActivity::class.java)
+            startActivity(intent)
+        }
     }
 
     private fun setupUI() {
