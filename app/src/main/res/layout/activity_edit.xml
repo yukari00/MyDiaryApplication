@@ -12,7 +12,7 @@
         android:orientation="vertical">
 
         <TextView
-            android:id="@+id/textViewDate"
+            android:id="@+id/text_view_date"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="16dp"
@@ -20,7 +20,7 @@
             android:textSize="30sp" />
 
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/inputDetail"
+            android:id="@+id/input_detail"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
