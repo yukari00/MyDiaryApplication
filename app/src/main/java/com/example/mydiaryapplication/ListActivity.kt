@@ -17,7 +17,7 @@ class ListActivity : AppCompatActivity() {
 
         setupUI()
 
-        floatingButton.setOnClickListener {
+        floating_button.setOnClickListener {
 
             val intent = Intent(this@ListActivity, EditActivity::class.java)
             startActivity(intent)
