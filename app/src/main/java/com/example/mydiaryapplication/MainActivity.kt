@@ -28,13 +28,13 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         firebaseAuth = FirebaseAuth.getInstance()
-        val user = firebaseAuth.currentUser
-        if (user != null) {
+
+        if (firebaseAuth.currentUser != null) {
             startActivity(ListActivity.getLaunchIntent(this))
             finish()
         }
-            configureGoogleSignIn()
-            setupUI()
+        configureGoogleSignIn()
+        setupUI()
     }
 
     private fun configureGoogleSignIn() {
