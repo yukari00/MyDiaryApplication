@@ -12,7 +12,7 @@
         android:orientation="vertical">
 
         <TextView
-            android:id="@+id/detailDate"
+            android:id="@+id/detail_date"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="16dp"
@@ -20,7 +20,7 @@
             android:textSize="24sp" />
 
         <TextView
-            android:id="@+id/detailDetail"
+            android:id="@+id/detail_detail"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="16dp"
