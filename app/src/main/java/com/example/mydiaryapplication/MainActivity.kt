@@ -23,23 +23,18 @@ class MainActivity : AppCompatActivity() {
     lateinit var mGoogleSignInOptions: GoogleSignInOptions
     private lateinit var firebaseAuth: FirebaseAuth
 
-    override fun onStart() {
-        super.onStart()
-        val user = FirebaseAuth.getInstance().currentUser
-        if (user != null) {
-            startActivity(ListActivity.getLaunchIntent(this))
-            finish()
-        }
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
         firebaseAuth = FirebaseAuth.getInstance()
-
-        configureGoogleSignIn()
-        setupUI()
+        val user = firebaseAuth.currentUser
+        if (user != null) {
+            startActivity(ListActivity.getLaunchIntent(this))
+            finish()
+        }
+            configureGoogleSignIn()
+            setupUI()
     }
 
     private fun configureGoogleSignIn() {
@@ -69,8 +64,7 @@ class MainActivity : AppCompatActivity() {
                 val account = task.getResult(ApiException::class.java)
                 firebaseAuthWithGoogle(account!!)
             } catch (e: ApiException) {
-                Log.d("errorrrr","ApiExceptionは${e}です")
-                Toast.makeText(this, "Google sign in failed1:(", Toast.LENGTH_LONG).show()
+                Toast.makeText(this, "Google sign in failed", Toast.LENGTH_LONG).show()
             }
         }
     }
@@ -82,7 +76,7 @@ class MainActivity : AppCompatActivity() {
 
                 startActivity(ListActivity.getLaunchIntent(this))
             } else {
-                Toast.makeText(this, "Google sign in failed2:(", Toast.LENGTH_LONG).show()
+                Toast.makeText(this, "Firebase auth failed", Toast.LENGTH_LONG).show()
             }
         }
     }
