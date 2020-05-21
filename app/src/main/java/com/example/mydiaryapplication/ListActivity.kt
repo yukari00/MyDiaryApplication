@@ -48,7 +48,28 @@ class ListActivity : AppCompatActivity() {
                 Log.d("CHHHHHHH", "ニューリストは$newList")
 
                 if (newList != null) {
-                    val viewAdapter = MyAdapter(newList)
+                    //val adapter = HogeAdapter(
+                    //            listOf("aaa", "bbb"),
+                    //            object : HogeAdapter.OnClickNoteListener {
+                    //                override fun onClick(title: String) {
+                    //                    startActivity(
+                    //                        this,
+                    //                        EditActivity.createIntent(title)
+                    //                    )
+                    //                }
+                    //            }
+                    //        )
+                    val viewAdapter = MyAdapter(newList,
+                        object : MyAdapter.OnClickNoteListener {
+                            override fun OnClick(data : NoteData) {
+                                val intent = DetailActivity.getLaunchIntent(this@ListActivity).apply {
+                                    putExtra(INTENT_KEY_DATE, data.date)
+                                    putExtra(INTENT_KEY_TITLE, data.title)
+                                    putExtra(INTENT_KEY_DETAIL, data.detail)
+                                }
+                                startActivity(intent)
+                            }
+                        })
                     val viewManager = LinearLayoutManager(this)
                     recycler_view.apply {
                         setHasFixedSize(true)
