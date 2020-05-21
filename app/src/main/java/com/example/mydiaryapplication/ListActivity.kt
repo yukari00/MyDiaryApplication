@@ -41,7 +41,7 @@ class ListActivity : AppCompatActivity() {
                     list?.add(document)
                 }
                 val newList = list?.map {
-                    NoteData(it.getTimestamp("date"), it.getString("detail"))
+                    NoteData(it.getString("date"), it.getString("title"), it.getString("detail"))
                 }
 
                 Log.d("CHHHHHHH", "リストは$list")

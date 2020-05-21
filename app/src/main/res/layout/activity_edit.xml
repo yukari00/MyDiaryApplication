@@ -11,18 +11,28 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/text_view_date"
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/input_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="16dp"
-            android:text="TextView"
-            android:textSize="30sp" />
+            android:layout_margin="8dp">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/input_edit_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                android:textSize="21sp"
+                android:hint="タイトル" />
+        </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/input_detail"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:layout_marginTop="20dp">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/input_edit_detail"
@@ -30,7 +40,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_marginEnd="8dp"
-                android:hint="hint" />
+                android:textSize="18sp"
+                android:hint="テキスト内容" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <Button

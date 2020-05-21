@@ -1,5 +1,6 @@
 package com.example.mydiaryapplication
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
@@ -9,7 +10,9 @@ import android.widget.Toast
 import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.gson.internal.bind.util.ISO8601Utils.format
 import kotlinx.android.synthetic.main.activity_edit.*
+import java.text.SimpleDateFormat
 import java.util.*
 
 class EditActivity : AppCompatActivity() {
@@ -29,16 +32,23 @@ class EditActivity : AppCompatActivity() {
 
         val database = FirebaseFirestore.getInstance()
 
+        val setTitle = input_edit_title.text.toString()
         val setDetail = input_edit_detail.text.toString()
 
+        if(setTitle == ""){
+            input_title.error = "入力してください"
+            return
+        }
         if (setDetail == "") {
             input_detail.error = "入力してください"
             return
         }
 
         val user = FirebaseAuth.getInstance().currentUser!!.uid
+        val dateFormat = SimpleDateFormat("yyyy年MM月dd日(E) HH:mm")
+        val date = dateFormat.format(Date())
 
-        val newData = NoteData(Timestamp(Date()), setDetail)
+        val newData = NoteData(date, setTitle, setDetail)
         database.collection("users").document(user).collection("notes").add(newData)
             .addOnSuccessListener {
                 Log.d("TAG", "DocumentSnapshot successfully written!")

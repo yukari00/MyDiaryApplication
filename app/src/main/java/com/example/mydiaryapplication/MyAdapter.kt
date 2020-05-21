@@ -20,7 +20,7 @@ class MyAdapter(val data : List<NoteData>) : RecyclerView.Adapter<MyAdapter.MyVi
 
     override fun onBindViewHolder(holder: MyAdapter.MyViewHolder, position: Int) {
         holder.mView.card_date.text = data[position].date.toString()
-        holder.mView.card_detail.text = data[position].detail
+        holder.mView.card_title.text = data[position].title
     }
 
 
