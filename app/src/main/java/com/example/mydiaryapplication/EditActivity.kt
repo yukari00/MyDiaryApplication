@@ -38,7 +38,7 @@ class EditActivity : AppCompatActivity() {
 
         val user = FirebaseAuth.getInstance().currentUser!!.uid
 
-        val newData = hashMapOf("date" to Timestamp(Date()),"detail" to setDetail)
+        val newData = NoteData(Timestamp(Date()), setDetail)
         database.collection("users").document(user).collection("notes").add(newData)
             .addOnSuccessListener {
                 Log.d("TAG", "DocumentSnapshot successfully written!")

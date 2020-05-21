@@ -12,6 +12,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.android.synthetic.main.activity_list.*
+import java.sql.Timestamp
 import java.util.*
 
 class ListActivity : AppCompatActivity() {
@@ -40,8 +41,9 @@ class ListActivity : AppCompatActivity() {
                     list?.add(document)
                 }
                 val newList = list?.map {
-                    NoteData(date = it.getDate("date"), detail = it.getString("detail"))
+                    NoteData(it.getTimestamp("date"), it.getString("detail"))
                 }
+
                 Log.d("CHHHHHHH", "リストは$list")
                 Log.d("CHHHHHHH", "ニューリストは$newList")
 
