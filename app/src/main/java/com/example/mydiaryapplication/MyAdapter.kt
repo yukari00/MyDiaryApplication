@@ -8,19 +8,19 @@ import kotlinx.android.synthetic.main.recycler_text.view.*
 
 class MyAdapter(val data : List<NoteData>) : RecyclerView.Adapter<MyAdapter.MyViewHolder>() {
 
-    class MyViewHolder(val mView: View) : RecyclerView.ViewHolder(mView)
+    class MyViewHolder(val view: View) : RecyclerView.ViewHolder(view)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyAdapter.MyViewHolder {
-        val mView = LayoutInflater.from(parent.context)
+        val view = LayoutInflater.from(parent.context)
             .inflate(R.layout.recycler_text, parent, false)
-        return MyViewHolder(mView)
+        return MyViewHolder(view)
     }
 
     override fun getItemCount(): Int = data.size
 
     override fun onBindViewHolder(holder: MyAdapter.MyViewHolder, position: Int) {
-        holder.mView.card_date.text = data[position].date.toString()
-        holder.mView.card_title.text = data[position].title
+        holder.view.card_date.text = data[position].date.toString()
+        holder.view.card_title.text = data[position].title
     }
 
 
