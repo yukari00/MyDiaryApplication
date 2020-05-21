@@ -32,31 +32,32 @@ class ListActivity : AppCompatActivity() {
         val database = FirebaseFirestore.getInstance()
         val userId = FirebaseAuth.getInstance().currentUser!!.uid
 
-        val list : MutableList<DocumentSnapshot>? = mutableListOf()
+        val list: MutableList<DocumentSnapshot>? = mutableListOf()
         database.collection("users").document(userId).collection("notes")
             .get().addOnSuccessListener { result ->
                 for (document in result) {
                     Log.d("CHECK THIS", "${document.id} => ${document.data}")
                     list?.add(document)
                 }
+                val newList = list?.map {
+                    NoteData(date = it.getDate("date"), detail = it.getString("detail"))
+                }
+                Log.d("CHHHHHHH", "リストは$list")
+                Log.d("CHHHHHHH", "ニューリストは$newList")
+
+                if (newList != null) {
+                    val viewAdapter = MyAdapter(newList)
+                    val viewManager = LinearLayoutManager(this)
+                    recycler_view.apply {
+                        setHasFixedSize(true)
+                        layoutManager = viewManager
+                        adapter = viewAdapter
+                    }
+                }
             }
             .addOnFailureListener { exception ->
                 Log.d("CHECK THIS", "Error getting documents: ", exception)
             }
-
-        val newList = list?.map {
-            NoteData(date = it.getDate("date"), detail = it.getString("detail"))
-        }
-
-        if (newList != null) {
-            val viewAdapter = MyAdapter(newList)
-            val viewManager = LinearLayoutManager(this)
-            recycler_view.apply {
-                setHasFixedSize(true)
-                layoutManager = viewManager
-                adapter = viewAdapter
-            }
-        }
 
     }
 
