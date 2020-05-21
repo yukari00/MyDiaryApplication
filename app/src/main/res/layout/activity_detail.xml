@@ -15,6 +15,14 @@
             android:id="@+id/detail_date"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:text="日付"
+            android:textSize="18sp"
+            android:layout_margin="8dp" />
+
+        <TextView
+            android:id="@+id/detail_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:layout_margin="16dp"
             android:text="@string/detail_date"
             android:textSize="24sp" />
@@ -27,7 +35,8 @@
             android:layout_marginTop="0dp"
             android:layout_marginRight="16dp"
             android:layout_marginBottom="16dp"
-            android:text="TextView"
+            android:text="テキスト内容"
             android:textSize="18sp" />
+
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -6,7 +6,11 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.recycler_text.view.*
 
-class MyAdapter(val data : List<NoteData>) : RecyclerView.Adapter<MyAdapter.MyViewHolder>() {
+class MyAdapter(val data : List<NoteData>, val listener : OnClickNoteListener) : RecyclerView.Adapter<MyAdapter.MyViewHolder>() {
+
+    interface OnClickNoteListener {
+        fun OnClick(data : NoteData)
+    }
 
     class MyViewHolder(val view: View) : RecyclerView.ViewHolder(view)
 
@@ -19,8 +23,13 @@ class MyAdapter(val data : List<NoteData>) : RecyclerView.Adapter<MyAdapter.MyVi
     override fun getItemCount(): Int = data.size
 
     override fun onBindViewHolder(holder: MyAdapter.MyViewHolder, position: Int) {
-        holder.view.card_date.text = data[position].date.toString()
+        val item = data[position]
+        holder.view.card_date.text = data[position].date
         holder.view.card_title.text = data[position].title
+
+        holder.view.card_view.setOnClickListener{
+            listener.OnClick(item)
+        }
     }
 
 

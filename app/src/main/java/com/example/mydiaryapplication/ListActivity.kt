@@ -12,8 +12,6 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.android.synthetic.main.activity_list.*
-import kotlinx.android.synthetic.main.activity_list.recycler_view
-import kotlinx.android.synthetic.main.activity_list.view.*
 import java.sql.Timestamp
 import java.util.*
 
@@ -43,20 +41,40 @@ class ListActivity : AppCompatActivity() {
                     list?.add(document)
                 }
                 val newList = list?.map {
-                    NoteData(
-                        it.getString(NoteData.KEY_DATE),
-                        it.getString(NoteData.KEY_TITLE),
-                        it.getString(NoteData.KEY_DETAIL)
-                    )
+                    NoteData(it.getString("date"), it.getString("title"), it.getString("detail"))
                 }
 
+                Log.d("CHHHHHHH", "リストは$list")
+                Log.d("CHHHHHHH", "ニューリストは$newList")
+
                 if (newList != null) {
-                    val myAdapter = MyAdapter(newList)
-                    val manager = LinearLayoutManager(this)
+                    //val adapter = HogeAdapter(
+                    //            listOf("aaa", "bbb"),
+                    //            object : HogeAdapter.OnClickNoteListener {
+                    //                override fun onClick(title: String) {
+                    //                    startActivity(
+                    //                        this,
+                    //                        EditActivity.createIntent(title)
+                    //                    )
+                    //                }
+                    //            }
+                    //        )
+                    val viewAdapter = MyAdapter(newList,
+                        object : MyAdapter.OnClickNoteListener {
+                            override fun OnClick(data : NoteData) {
+                                val intent = DetailActivity.getLaunchIntent(this@ListActivity).apply {
+                                    putExtra(INTENT_KEY_DATE, data.date)
+                                    putExtra(INTENT_KEY_TITLE, data.title)
+                                    putExtra(INTENT_KEY_DETAIL, data.detail)
+                                }
+                                startActivity(intent)
+                            }
+                        })
+                    val viewManager = LinearLayoutManager(this)
                     recycler_view.apply {
                         setHasFixedSize(true)
-                        layoutManager = manager
-                        adapter = myAdapter
+                        layoutManager = viewManager
+                        adapter = viewAdapter
                     }
                 }
             }
