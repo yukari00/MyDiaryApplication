@@ -38,7 +38,7 @@ class DetailActivity : AppCompatActivity() {
         private const val INTENT_KEY_TITLE = "INTENT_KEY_TITLE"
         private const val INTENT_KEY_DETAIL = "INTENT_KEY_DETAIL"
 
-        fun getLaunchIntent(from: Context, data: NoteData) =
+        fun getLaunchIntent(from: Context, data: NoteDataList) =
             Intent(from, DetailActivity::class.java).apply {
                 putExtra(INTENT_KEY_DATE, data.date)
                 putExtra(INTENT_KEY_TITLE, data.title)

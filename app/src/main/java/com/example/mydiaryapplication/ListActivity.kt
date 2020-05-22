@@ -43,18 +43,11 @@ class ListActivity : AppCompatActivity() {
                         it.getString(NoteDataList.KEY_DETAIL), it.id)
                 }
 
-                Log.d("CHHHHHHH", "リストは$list")
-                Log.d("CHHHHHHH", "ニューリストは$newList")
-
                 if (newList != null) {
                     val viewAdapter = MyAdapter(newList,
                         object : MyAdapter.OnClickNoteListener {
                             override fun OnClick(data : NoteDataList){
-                                val intent = DetailActivity.getLaunchIntent(this@ListActivity).apply {
-                                    putExtra(INTENT_KEY_DATE, data.date)
-                                    putExtra(INTENT_KEY_TITLE, data.title)
-                                    putExtra(INTENT_KEY_DETAIL, data.detail)
-                                }
+                                val intent = DetailActivity.getLaunchIntent(this@ListActivity, data)
                                 startActivity(intent)
                             }
                             override fun OnLongClick(data : NoteDataList) {
