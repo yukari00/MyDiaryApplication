@@ -58,22 +58,7 @@ class ListActivity : AppCompatActivity() {
                                 startActivity(intent)
                             }
                             override fun OnLongClick(data : NoteDataList) {
-                                AlertDialog.Builder(this@ListActivity).apply {
-                                    setTitle("削除")
-                                    setMessage("削除してもいいですか")
-                                    setPositiveButton("はい") { dialog, which ->
-                                        val a = database.collection("users").document(userId)
-                                            .collection("notes").document(data.id!!).delete()
-                                            .addOnSuccessListener {
-                                                Toast.makeText(this@ListActivity, "削除されました", Toast.LENGTH_SHORT).show()
-                                                showList()
-                                            }.addOnFailureListener {
-                                                Toast.makeText(this@ListActivity, "削除されませんでした", Toast.LENGTH_SHORT).show()
-                                            }
-                                    }
-                                    setNegativeButton("いいえ") { dialog, which -> }
-                                    show()
-                                }
+                                deleteData(data)
                             }
                         })
                     val viewManager = LinearLayoutManager(this)
@@ -88,6 +73,28 @@ class ListActivity : AppCompatActivity() {
                 Log.d("CHECK THIS", "Error getting documents: ", exception)
             }
 
+    }
+
+    private fun deleteData(data : NoteDataList) {
+        val database = FirebaseFirestore.getInstance()
+        val userId = FirebaseAuth.getInstance().currentUser!!.uid
+
+        AlertDialog.Builder(this@ListActivity).apply {
+            setTitle("削除")
+            setMessage("削除してもいいですか")
+            setPositiveButton("はい") { dialog, which ->
+                val a = database.collection("users").document(userId)
+                    .collection("notes").document(data.id!!).delete()
+                    .addOnSuccessListener {
+                        Toast.makeText(this@ListActivity, "削除されました", Toast.LENGTH_SHORT).show()
+                        showList()
+                    }.addOnFailureListener {
+                        Toast.makeText(this@ListActivity, "削除されませんでした", Toast.LENGTH_SHORT).show()
+                    }
+            }
+            setNegativeButton("いいえ") { dialog, which -> }
+            show()
+        }
     }
 
     private fun setupUI() {
