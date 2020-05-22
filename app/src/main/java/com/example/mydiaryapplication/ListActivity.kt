@@ -5,15 +5,14 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import android.view.Menu
-import android.view.MenuItem
+import android.view.*
+import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.android.synthetic.main.activity_list.*
-import java.sql.Timestamp
-import java.util.*
 
 class ListActivity : AppCompatActivity() {
 
@@ -24,7 +23,6 @@ class ListActivity : AppCompatActivity() {
         setupUI()
         showList()
         floating_button.setOnClickListener {
-
             startActivity(EditActivity.getLaunchIntent(this))
         }
     }
@@ -41,33 +39,41 @@ class ListActivity : AppCompatActivity() {
                     list?.add(document)
                 }
                 val newList = list?.map {
-                    NoteData(it.getString("date"), it.getString("title"), it.getString("detail"))
+                    NoteDataList(it.getString(NoteDataList.KEY_DATE), it.getString(NoteDataList.KEY_TITLE),
+                        it.getString(NoteDataList.KEY_DETAIL), it.id)
                 }
 
                 Log.d("CHHHHHHH", "リストは$list")
                 Log.d("CHHHHHHH", "ニューリストは$newList")
 
                 if (newList != null) {
-                    //val adapter = HogeAdapter(
-                    //            listOf("aaa", "bbb"),
-                    //            object : HogeAdapter.OnClickNoteListener {
-                    //                override fun onClick(title: String) {
-                    //                    startActivity(
-                    //                        this,
-                    //                        EditActivity.createIntent(title)
-                    //                    )
-                    //                }
-                    //            }
-                    //        )
                     val viewAdapter = MyAdapter(newList,
                         object : MyAdapter.OnClickNoteListener {
-                            override fun OnClick(data : NoteData) {
+                            override fun OnClick(data : NoteDataList){
                                 val intent = DetailActivity.getLaunchIntent(this@ListActivity).apply {
                                     putExtra(INTENT_KEY_DATE, data.date)
                                     putExtra(INTENT_KEY_TITLE, data.title)
                                     putExtra(INTENT_KEY_DETAIL, data.detail)
                                 }
                                 startActivity(intent)
+                            }
+                            override fun OnLongClick(data : NoteDataList) {
+                                AlertDialog.Builder(this@ListActivity).apply {
+                                    setTitle("削除")
+                                    setMessage("削除してもいいですか")
+                                    setPositiveButton("はい") { dialog, which ->
+                                        val a = database.collection("users").document(userId)
+                                            .collection("notes").document(data.id!!).delete()
+                                            .addOnSuccessListener {
+                                                Toast.makeText(this@ListActivity, "削除されました", Toast.LENGTH_SHORT).show()
+                                                showList()
+                                            }.addOnFailureListener {
+                                                Toast.makeText(this@ListActivity, "削除されませんでした", Toast.LENGTH_SHORT).show()
+                                            }
+                                    }
+                                    setNegativeButton("いいえ") { dialog, which -> }
+                                    show()
+                                }
                             }
                         })
                     val viewManager = LinearLayoutManager(this)

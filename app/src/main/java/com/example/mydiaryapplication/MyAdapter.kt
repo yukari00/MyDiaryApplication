@@ -6,10 +6,11 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.recycler_text.view.*
 
-class MyAdapter(val data : List<NoteData>, val listener : OnClickNoteListener) : RecyclerView.Adapter<MyAdapter.MyViewHolder>() {
+class MyAdapter(val data : List<NoteDataList>, val listener : OnClickNoteListener) : RecyclerView.Adapter<MyAdapter.MyViewHolder>() {
 
     interface OnClickNoteListener {
-        fun OnClick(data : NoteData)
+        fun OnClick(data : NoteDataList)
+        fun OnLongClick(data : NoteDataList)
     }
 
     class MyViewHolder(val view: View) : RecyclerView.ViewHolder(view)
@@ -29,6 +30,10 @@ class MyAdapter(val data : List<NoteData>, val listener : OnClickNoteListener) :
 
         holder.view.card_view.setOnClickListener{
             listener.OnClick(item)
+        }
+        holder.view.card_view.setOnLongClickListener{
+            listener.OnLongClick(item)
+            true
         }
     }
 
