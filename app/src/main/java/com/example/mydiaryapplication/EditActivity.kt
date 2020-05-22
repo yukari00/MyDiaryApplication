@@ -32,14 +32,14 @@ class EditActivity : AppCompatActivity() {
 
         val database = FirebaseFirestore.getInstance()
 
-        val setTitle = input_edit_title.text.toString()
-        val setDetail = input_edit_detail.text.toString()
+        val title = input_edit_title.text.toString()
+        val detail = input_edit_detail.text.toString()
 
-        if(setTitle == ""){
+        if(title == ""){
             input_title.error = "入力してください"
             return
         }
-        if (setDetail == "") {
+        if(detail == "") {
             input_detail.error = "入力してください"
             return
         }
@@ -48,7 +48,7 @@ class EditActivity : AppCompatActivity() {
         val dateFormat = SimpleDateFormat("yyyy年MM月dd日(E) HH:mm")
         val date = dateFormat.format(Date())
 
-        val newData = NoteData(date, setTitle, setDetail)
+        val newData = NoteData(date, title, detail)
         database.collection("users").document(user).collection("notes").add(newData)
             .addOnSuccessListener {
                 Log.d("TAG", "DocumentSnapshot successfully written!")

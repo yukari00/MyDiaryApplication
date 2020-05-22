@@ -12,6 +12,8 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.android.synthetic.main.activity_list.*
+import kotlinx.android.synthetic.main.activity_list.recycler_view
+import kotlinx.android.synthetic.main.activity_list.view.*
 import java.sql.Timestamp
 import java.util.*
 
@@ -41,22 +43,20 @@ class ListActivity : AppCompatActivity() {
                     list?.add(document)
                 }
                 val newList = list?.map {
-                    NoteData(it.getString("date"), it.getString("title"), it.getString("detail"))
+                    NoteData(
+                        it.getString(NoteData.KEY_DATE),
+                        it.getString(NoteData.KEY_TITLE),
+                        it.getString(NoteData.KEY_DETAIL)
+                    )
                 }
 
                 if (newList != null) {
-                    val viewAdapter = MyAdapter(newList,
-                        object : MyAdapter.OnClickNoteListener {
-                            override fun OnClick(data : NoteData) {
-                                val intent = DetailActivity.getLaunchIntent(this@ListActivity, data)
-                                startActivity(intent)
-                            }
-                        })
-                    val viewManager = LinearLayoutManager(this)
+                    val myAdapter = MyAdapter(newList)
+                    val manager = LinearLayoutManager(this)
                     recycler_view.apply {
                         setHasFixedSize(true)
-                        layoutManager = viewManager
-                        adapter = viewAdapter
+                        layoutManager = manager
+                        adapter = myAdapter
                     }
                 }
             }
