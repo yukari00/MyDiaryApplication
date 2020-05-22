@@ -23,9 +23,8 @@ class ListActivity : AppCompatActivity() {
         val toolbar = findViewById<androidx.appcompat.widget.Toolbar>(R.id.toolbar)
         setSupportActionBar(toolbar)
 
-        showList()
         floating_button.setOnClickListener {
-            startActivity(EditActivity.getLaunchIntent(this))
+            startActivity(EditActivity.getLaunchIntent(this,"", STATUS_NEW))
         }
     }
 
@@ -50,6 +49,12 @@ class ListActivity : AppCompatActivity() {
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+
+        showList()
+    }
+
     private fun showList() {
         val database = FirebaseFirestore.getInstance()
         val userId = FirebaseAuth.getInstance().currentUser!!.uid
@@ -63,8 +68,8 @@ class ListActivity : AppCompatActivity() {
                 }
                 val newList = list?.map {
                     NoteDataList(
-                        it.getString(NoteDataList.KEY_DATE), it.getString(NoteDataList.KEY_TITLE),
-                        it.getString(NoteDataList.KEY_DETAIL), it.id
+                        it.getString(NoteData.KEY_DATE), it.getString(NoteData.KEY_TITLE),
+                        it.getString(NoteData.KEY_DETAIL), it.id
                     )
                 }
 
@@ -122,6 +127,9 @@ class ListActivity : AppCompatActivity() {
     }
 
     companion object {
+
+        private const val STATUS_NEW = "STATUS_NEW"
+
         fun getLaunchIntent(from: Context) = Intent(from, ListActivity::class.java).apply {
             addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
         }
