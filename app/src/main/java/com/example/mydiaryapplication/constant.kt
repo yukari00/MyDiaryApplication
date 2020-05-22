@@ -1,5 +1,0 @@
-package com.example.mydiaryapplication
-
-val INTENT_KEY_DATE = "INTENT_KEY_DATE"
-val INTENT_KEY_TITLE = "INTENT_KEY_TITLE"
-val INTENT_KEY_DETAIL = "INTENT_KEY_DETAIL"
