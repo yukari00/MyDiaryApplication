@@ -5,6 +5,8 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.Menu
+import android.view.MenuItem
 import android.widget.Toast
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -18,11 +20,34 @@ class EditActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_edit)
 
-        //ボタンはToolbar作成後、修正
-        button_edit_done.setOnClickListener {
-            addNewData()
-        }
+        val toolbar = findViewById<androidx.appcompat.widget.Toolbar>(R.id.toolbar)
+        setSupportActionBar(toolbar)
 
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.menu_main, menu)
+        menu?.apply {
+            findItem(R.id.menu_signout).isVisible = false
+            findItem(R.id.menu_back).isVisible = true
+            findItem(R.id.menu_edit).isVisible = false
+            findItem(R.id.menu_done).isVisible = true
+        }
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.menu_back -> {
+                finish()
+                return true
+            }
+            R.id.menu_done -> {
+                addNewData()
+                return true
+            }
+            else -> return super.onOptionsItemSelected(item)
+        }
     }
 
     private fun addNewData() {
@@ -32,11 +57,11 @@ class EditActivity : AppCompatActivity() {
         val title = input_edit_title.text.toString()
         val detail = input_edit_detail.text.toString()
 
-        if(title == ""){
+        if (title == "") {
             input_title.error = "入力してください"
             return
         }
-        if(detail == "") {
+        if (detail == "") {
             input_detail.error = "入力してください"
             return
         }
@@ -60,9 +85,7 @@ class EditActivity : AppCompatActivity() {
     }
 
     companion object {
-        fun getLaunchIntent(from: Context) = Intent(from, EditActivity::class.java).apply {
-            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-        }
+        fun getLaunchIntent(from: Context) = Intent(from, EditActivity::class.java)
     }
 
 }

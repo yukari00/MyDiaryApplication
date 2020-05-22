@@ -20,10 +20,33 @@ class ListActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_list)
 
-        setupUI()
+        val toolbar = findViewById<androidx.appcompat.widget.Toolbar>(R.id.toolbar)
+        setSupportActionBar(toolbar)
+
         showList()
         floating_button.setOnClickListener {
             startActivity(EditActivity.getLaunchIntent(this))
+        }
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.menu_main, menu)
+        menu?.apply {
+            findItem(R.id.menu_signout).isVisible = true
+            findItem(R.id.menu_back).isVisible = false
+            findItem(R.id.menu_edit).isVisible = false
+            findItem(R.id.menu_done).isVisible = false
+        }
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.menu_signout -> {
+                signOut()
+                return true
+            }
+            else -> return super.onOptionsItemSelected(item)
         }
     }
 
@@ -39,25 +62,21 @@ class ListActivity : AppCompatActivity() {
                     list?.add(document)
                 }
                 val newList = list?.map {
-                    NoteDataList(it.getString(NoteDataList.KEY_DATE), it.getString(NoteDataList.KEY_TITLE),
-                        it.getString(NoteDataList.KEY_DETAIL), it.id)
+                    NoteDataList(
+                        it.getString(NoteDataList.KEY_DATE), it.getString(NoteDataList.KEY_TITLE),
+                        it.getString(NoteDataList.KEY_DETAIL), it.id
+                    )
                 }
-
-                Log.d("CHHHHHHH", "リストは$list")
-                Log.d("CHHHHHHH", "ニューリストは$newList")
 
                 if (newList != null) {
                     val viewAdapter = MyAdapter(newList,
                         object : MyAdapter.OnClickNoteListener {
-                            override fun OnClick(data : NoteDataList){
-                                val intent = DetailActivity.getLaunchIntent(this@ListActivity).apply {
-                                    putExtra(INTENT_KEY_DATE, data.date)
-                                    putExtra(INTENT_KEY_TITLE, data.title)
-                                    putExtra(INTENT_KEY_DETAIL, data.detail)
-                                }
+                            override fun OnClick(data: NoteDataList) {
+                                val intent = DetailActivity.getLaunchIntent(this@ListActivity, data)
                                 startActivity(intent)
                             }
-                            override fun OnLongClick(data : NoteDataList) {
+
+                            override fun OnLongClick(data: NoteDataList) {
                                 deleteData(data)
                             }
                         })
@@ -75,7 +94,7 @@ class ListActivity : AppCompatActivity() {
 
     }
 
-    private fun deleteData(data : NoteDataList) {
+    private fun deleteData(data: NoteDataList) {
         val database = FirebaseFirestore.getInstance()
         val userId = FirebaseAuth.getInstance().currentUser!!.uid
 
@@ -94,12 +113,6 @@ class ListActivity : AppCompatActivity() {
             }
             setNegativeButton("いいえ") { dialog, which -> }
             show()
-        }
-    }
-
-    private fun setupUI() {
-        sign_out_button.setOnClickListener {
-            signOut()
         }
     }
 

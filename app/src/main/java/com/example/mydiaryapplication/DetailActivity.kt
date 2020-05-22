@@ -4,35 +4,75 @@ import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuItem
+import android.widget.Toast
 import kotlinx.android.synthetic.main.activity_detail.*
 
 class DetailActivity : AppCompatActivity() {
-
-    var date = ""
-    var title = ""
-    var detail = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_detail)
 
-        val bundle = intent.extras!!
-        date = bundle.getString(INTENT_KEY_DATE)!!
-        title = bundle.getString(INTENT_KEY_TITLE)!!
-        detail = bundle.getString(INTENT_KEY_DETAIL)!!
+        val toolbar = findViewById<androidx.appcompat.widget.Toolbar>(R.id.toolbar)
+        setSupportActionBar(toolbar)
 
-        upDate()
+        if(intent.extras == null){
+            Toast.makeText(this, "エラーが発生しました", Toast.LENGTH_LONG).show()
+            finish()
+        }
+
+        val bundle = intent.extras!!
+        val date = bundle.getString(INTENT_KEY_DATE)!!
+        val title = bundle.getString(INTENT_KEY_TITLE)!!
+        val detail = bundle.getString(INTENT_KEY_DETAIL)!!
+
+        update(date, title, detail)
     }
 
-    private fun upDate() {
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.menu_main, menu)
+        menu?.apply {
+            findItem(R.id.menu_signout).isVisible = false
+            findItem(R.id.menu_back).isVisible = true
+            findItem(R.id.menu_edit).isVisible = true
+            findItem(R.id.menu_done).isVisible = false
+        }
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.menu_back -> {
+                finish()
+                return true
+            }
+            R.id.menu_edit -> {
+                //Todo データを持って編集画面へ
+                return true
+            }
+            else -> return super.onOptionsItemSelected(item)
+        }
+    }
+
+    private fun update(date: String, title: String, detail: String) {
         detail_date.text = date
         detail_title.text = title
         detail_detail.text = detail
     }
 
     companion object {
-        fun getLaunchIntent(from: Context) = Intent(from, DetailActivity::class.java).apply {
-                flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+
+        private const val INTENT_KEY_DATE = "INTENT_KEY_DATE"
+        private const val INTENT_KEY_TITLE = "INTENT_KEY_TITLE"
+        private const val INTENT_KEY_DETAIL = "INTENT_KEY_DETAIL"
+
+        fun getLaunchIntent(from: Context, data: NoteDataList) =
+            Intent(from, DetailActivity::class.java).apply {
+                putExtra(INTENT_KEY_DATE, data.date)
+                putExtra(INTENT_KEY_TITLE, data.title)
+                putExtra(INTENT_KEY_DETAIL, data.detail)
             }
 
     }
