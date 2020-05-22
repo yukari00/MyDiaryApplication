@@ -7,9 +7,15 @@ import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.android.synthetic.main.activity_list.*
+import kotlinx.android.synthetic.main.activity_list.recycler_view
+import kotlinx.android.synthetic.main.activity_list.view.*
+import java.sql.Timestamp
+import java.util.*
 
 class ListActivity : AppCompatActivity() {
 
@@ -29,15 +35,35 @@ class ListActivity : AppCompatActivity() {
         val database = FirebaseFirestore.getInstance()
         val userId = FirebaseAuth.getInstance().currentUser!!.uid
 
+        val list: MutableList<DocumentSnapshot>? = mutableListOf()
         database.collection("users").document(userId).collection("notes")
             .get().addOnSuccessListener { result ->
-            for (document in result) {
-                Log.d("CHECK THIS", "${document.id} => ${document.data}")
+                for (document in result) {
+                    Log.d("CHECK THIS", "${document.id} => ${document.data}")
+                    list?.add(document)
+                }
+                val newList = list?.map {
+                    NoteData(
+                        it.getString(NoteData.KEY_DATE),
+                        it.getString(NoteData.KEY_TITLE),
+                        it.getString(NoteData.KEY_DETAIL)
+                    )
+                }
+
+                if (newList != null) {
+                    val myAdapter = MyAdapter(newList)
+                    val manager = LinearLayoutManager(this)
+                    recycler_view.apply {
+                        setHasFixedSize(true)
+                        layoutManager = manager
+                        adapter = myAdapter
+                    }
+                }
             }
-        }
             .addOnFailureListener { exception ->
                 Log.d("CHECK THIS", "Error getting documents: ", exception)
             }
+
     }
 
     private fun setupUI() {
