@@ -39,26 +39,26 @@ class ListActivity : AppCompatActivity() {
                     list?.add(document)
                 }
                 val newList = list?.map {
-                    NoteDataList(it.getString(NoteDataList.KEY_DATE), it.getString(NoteDataList.KEY_TITLE),
-                        it.getString(NoteDataList.KEY_DETAIL), it.id)
+                    NoteDataWithId(it.getString(NoteDataWithId.KEY_DATE), it.getString(NoteDataWithId.KEY_TITLE),
+                        it.getString(NoteDataWithId.KEY_DETAIL), it.id)
                 }
 
                 if (newList != null) {
-                    val viewAdapter = MyAdapter(newList,
+                    val myAdapter = MyAdapter(newList,
                         object : MyAdapter.OnClickNoteListener {
-                            override fun OnClick(data : NoteDataList){
+                            override fun OnClick(data : NoteDataWithId){
                                 val intent = DetailActivity.getLaunchIntent(this@ListActivity, data)
                                 startActivity(intent)
                             }
-                            override fun OnLongClick(data : NoteDataList) {
+                            override fun OnLongClick(data : NoteDataWithId) {
                                 deleteData(data)
                             }
                         })
-                    val viewManager = LinearLayoutManager(this)
+                    val manager = LinearLayoutManager(this)
                     recycler_view.apply {
                         setHasFixedSize(true)
-                        layoutManager = viewManager
-                        adapter = viewAdapter
+                        layoutManager = manager
+                        adapter = myAdapter
                     }
                 }
             }
@@ -68,7 +68,7 @@ class ListActivity : AppCompatActivity() {
 
     }
 
-    private fun deleteData(data : NoteDataList) {
+    private fun deleteData(noteData : NoteDataWithId) {
         val database = FirebaseFirestore.getInstance()
         val userId = FirebaseAuth.getInstance().currentUser!!.uid
 
@@ -77,7 +77,7 @@ class ListActivity : AppCompatActivity() {
             setMessage("削除してもいいですか")
             setPositiveButton("はい") { dialog, which ->
                 val a = database.collection("users").document(userId)
-                    .collection("notes").document(data.id!!).delete()
+                    .collection("notes").document(noteData.id!!).delete()
                     .addOnSuccessListener {
                         Toast.makeText(this@ListActivity, "削除されました", Toast.LENGTH_SHORT).show()
                         showList()
