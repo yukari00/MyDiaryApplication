@@ -21,6 +21,7 @@ class DetailActivity : AppCompatActivity() {
 
         val toolbar = findViewById<androidx.appcompat.widget.Toolbar>(R.id.toolbar)
         setSupportActionBar(toolbar)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         if (intent.extras == null) {
             Toast.makeText(this, "エラーが発生しました", Toast.LENGTH_LONG).show()
@@ -33,22 +34,12 @@ class DetailActivity : AppCompatActivity() {
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.menu_main, menu)
-        menu?.apply {
-            findItem(R.id.menu_signout).isVisible = false
-            findItem(R.id.menu_back).isVisible = true
-            findItem(R.id.menu_edit).isVisible = true
-            findItem(R.id.menu_done).isVisible = false
-        }
+        menuInflater.inflate(R.menu.menu_detail, menu)
         return true
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-            R.id.menu_back -> {
-                finish()
-                return true
-            }
             R.id.menu_edit -> {
                 goEdit()
                 return true
@@ -91,7 +82,7 @@ class DetailActivity : AppCompatActivity() {
         private const val INTENT_KEY_ID = "INTENT_KEY_ID"
         private const val STATUS_EDIT = "STATUS_EDIT"
 
-        fun getLaunchIntent(from: Context, data: NoteDataList) =
+        fun getLaunchIntent(from: Context, data: NoteDataWithId) =
             Intent(from, DetailActivity::class.java).apply {
                 putExtra(INTENT_KEY_DATE, data.date)
                 putExtra(INTENT_KEY_TITLE, data.title)

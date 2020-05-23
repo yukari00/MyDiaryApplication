@@ -23,19 +23,14 @@ class ListActivity : AppCompatActivity() {
         val toolbar = findViewById<androidx.appcompat.widget.Toolbar>(R.id.toolbar)
         setSupportActionBar(toolbar)
 
+        showList()
         floating_button.setOnClickListener {
-            startActivity(EditActivity.getLaunchIntent(this,"", STATUS_NEW))
+            startActivity(EditActivity.getLaunchIntent(this))
         }
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.menu_main, menu)
-        menu?.apply {
-            findItem(R.id.menu_signout).isVisible = true
-            findItem(R.id.menu_back).isVisible = false
-            findItem(R.id.menu_edit).isVisible = false
-            findItem(R.id.menu_done).isVisible = false
-        }
+        menuInflater.inflate(R.menu.menu_list, menu)
         return true
     }
 
@@ -47,12 +42,6 @@ class ListActivity : AppCompatActivity() {
             }
             else -> return super.onOptionsItemSelected(item)
         }
-    }
-
-    override fun onResume() {
-        super.onResume()
-
-        showList()
     }
 
     private fun showList() {
@@ -67,29 +56,31 @@ class ListActivity : AppCompatActivity() {
                     list?.add(document)
                 }
                 val newList = list?.map {
-                    NoteDataList(
-                        it.getString(NoteData.KEY_DATE), it.getString(NoteData.KEY_TITLE),
-                        it.getString(NoteData.KEY_DETAIL), it.id
+                    NoteDataWithId(
+                        it.getString(NoteDataWithId.KEY_DATE),
+                        it.getString(NoteDataWithId.KEY_TITLE),
+                        it.getString(NoteDataWithId.KEY_DETAIL),
+                        it.id
                     )
                 }
 
                 if (newList != null) {
-                    val viewAdapter = MyAdapter(newList,
+                    val myAdapter = MyAdapter(newList,
                         object : MyAdapter.OnClickNoteListener {
-                            override fun OnClick(data: NoteDataList) {
+                            override fun OnClick(data: NoteDataWithId) {
                                 val intent = DetailActivity.getLaunchIntent(this@ListActivity, data)
                                 startActivity(intent)
                             }
 
-                            override fun OnLongClick(data: NoteDataList) {
+                            override fun OnLongClick(data: NoteDataWithId) {
                                 deleteData(data)
                             }
                         })
-                    val viewManager = LinearLayoutManager(this)
+                    val manager = LinearLayoutManager(this)
                     recycler_view.apply {
                         setHasFixedSize(true)
-                        layoutManager = viewManager
-                        adapter = viewAdapter
+                        layoutManager = manager
+                        adapter = myAdapter
                     }
                 }
             }
@@ -99,7 +90,7 @@ class ListActivity : AppCompatActivity() {
 
     }
 
-    private fun deleteData(data: NoteDataList) {
+    private fun deleteData(data: NoteDataWithId) {
         val database = FirebaseFirestore.getInstance()
         val userId = FirebaseAuth.getInstance().currentUser!!.uid
 
@@ -107,7 +98,7 @@ class ListActivity : AppCompatActivity() {
             setTitle("削除")
             setMessage("削除してもいいですか")
             setPositiveButton("はい") { dialog, which ->
-                val a = database.collection("users").document(userId)
+                database.collection("users").document(userId)
                     .collection("notes").document(data.id!!).delete()
                     .addOnSuccessListener {
                         Toast.makeText(this@ListActivity, "削除されました", Toast.LENGTH_SHORT).show()
@@ -127,9 +118,6 @@ class ListActivity : AppCompatActivity() {
     }
 
     companion object {
-
-        private const val STATUS_NEW = "STATUS_NEW"
-
         fun getLaunchIntent(from: Context) = Intent(from, ListActivity::class.java).apply {
             addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
         }
