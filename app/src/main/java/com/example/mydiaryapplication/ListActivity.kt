@@ -68,7 +68,7 @@ class ListActivity : AppCompatActivity() {
 
     }
 
-    private fun deleteData(noteData : NoteDataWithId) {
+    private fun deleteData(noteData: NoteDataWithId) {
         val database = FirebaseFirestore.getInstance()
         val userId = FirebaseAuth.getInstance().currentUser!!.uid
 
@@ -76,7 +76,7 @@ class ListActivity : AppCompatActivity() {
             setTitle("削除")
             setMessage("削除してもいいですか")
             setPositiveButton("はい") { dialog, which ->
-                val a = database.collection("users").document(userId)
+                database.collection("users").document(userId)
                     .collection("notes").document(noteData.id!!).delete()
                     .addOnSuccessListener {
                         Toast.makeText(this@ListActivity, "削除されました", Toast.LENGTH_SHORT).show()
