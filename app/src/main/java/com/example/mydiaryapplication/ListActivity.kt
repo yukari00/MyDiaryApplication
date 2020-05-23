@@ -23,9 +23,8 @@ class ListActivity : AppCompatActivity() {
         val toolbar = findViewById<androidx.appcompat.widget.Toolbar>(R.id.toolbar)
         setSupportActionBar(toolbar)
 
-        showList()
         floating_button.setOnClickListener {
-            startActivity(EditActivity.getLaunchIntent(this))
+            startActivity(EditActivity.getLaunchIntent(this, "", STATUS_NEW))
         }
     }
 
@@ -42,6 +41,12 @@ class ListActivity : AppCompatActivity() {
             }
             else -> return super.onOptionsItemSelected(item)
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        showList()
     }
 
     private fun showList() {
@@ -118,6 +123,9 @@ class ListActivity : AppCompatActivity() {
     }
 
     companion object {
+
+        private const val STATUS_NEW = "STATUS_NEW"
+
         fun getLaunchIntent(from: Context) = Intent(from, ListActivity::class.java).apply {
             addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
         }

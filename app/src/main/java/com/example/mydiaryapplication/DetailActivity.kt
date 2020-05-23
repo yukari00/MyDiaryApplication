@@ -55,7 +55,7 @@ class DetailActivity : AppCompatActivity() {
     }
 
     private fun goEdit() {
-        startActivity(EditActivity.getLaunchIntent(this,  id, STATUS_EDIT))
+        startActivity(EditActivity.getLaunchIntent(this, id, STATUS_EDIT))
     }
 
     private fun update() {
@@ -66,9 +66,9 @@ class DetailActivity : AppCompatActivity() {
             .collection("notes").document(id!!)
 
         docRef.get().addOnSuccessListener {
-            val date = it[NoteData.KEY_DATE] as String
-            val title = it[NoteData.KEY_TITLE] as String
-            val detail = it[NoteData.KEY_DETAIL] as String
+            val date = it[NoteDataWithId.KEY_DATE] as String
+            val title = it[NoteDataWithId.KEY_TITLE] as String
+            val detail = it[NoteDataWithId.KEY_DETAIL] as String
 
             detail_date.text = date
             detail_title.text = title
@@ -84,9 +84,6 @@ class DetailActivity : AppCompatActivity() {
 
         fun getLaunchIntent(from: Context, data: NoteDataWithId) =
             Intent(from, DetailActivity::class.java).apply {
-                putExtra(INTENT_KEY_DATE, data.date)
-                putExtra(INTENT_KEY_TITLE, data.title)
-                putExtra(INTENT_KEY_DETAIL, data.detail)
                 putExtra(INTENT_KEY_ID, data.id)
             }
 

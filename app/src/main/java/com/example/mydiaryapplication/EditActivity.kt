@@ -16,10 +16,10 @@ import java.util.*
 
 class EditActivity : AppCompatActivity() {
 
-    private var status : String? = ""
-    private var id : String? = ""
+    private var status: String? = ""
+    private var id: String? = ""
 
-    lateinit var database : FirebaseFirestore
+    lateinit var database: FirebaseFirestore
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -29,7 +29,7 @@ class EditActivity : AppCompatActivity() {
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        if(intent.extras == null){
+        if (intent.extras == null) {
             Toast.makeText(this, "エラーが発生しました", Toast.LENGTH_LONG).show()
             finish()
         }
@@ -46,8 +46,8 @@ class EditActivity : AppCompatActivity() {
                 .collection("notes").document(id!!)
 
             docRef.get().addOnSuccessListener {
-                val title = it[NoteData.KEY_TITLE] as String
-                val detail = it[NoteData.KEY_DETAIL] as String
+                val title = it[NoteDataWithId.KEY_TITLE] as String
+                val detail = it[NoteDataWithId.KEY_DETAIL] as String
 
                 input_edit_title.setText(title)
                 input_edit_detail.setText(detail)
@@ -70,7 +70,7 @@ class EditActivity : AppCompatActivity() {
         }
     }
 
-    private fun checkIt() : Boolean {
+    private fun checkIt(): Boolean {
         database = FirebaseFirestore.getInstance()
 
         val title = input_edit_title.text.toString()
@@ -85,7 +85,7 @@ class EditActivity : AppCompatActivity() {
             return false
         }
 
-        when(status){
+        when (status) {
             STATUS_NEW -> addNewData(title, detail)
             STATUS_EDIT -> edit(title, detail)
         }
@@ -142,11 +142,11 @@ class EditActivity : AppCompatActivity() {
         private const val STATUS_NEW = "STATUS_NEW"
         private const val STATUS_EDIT = "STATUS_EDIT"
 
-        fun getLaunchIntent(from: Context, id: String?, status: String?)
-                = Intent(from, EditActivity::class.java).apply{
-            putExtra(INTENT_KEY_STATUS, status)
-            putExtra(INTENT_KEY_ID, id)
-        }
+        fun getLaunchIntent(from: Context, id: String?, status: String?) =
+            Intent(from, EditActivity::class.java).apply {
+                putExtra(INTENT_KEY_STATUS, status)
+                putExtra(INTENT_KEY_ID, id)
+            }
     }
 
 }
