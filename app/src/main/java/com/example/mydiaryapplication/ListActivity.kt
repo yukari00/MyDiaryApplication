@@ -30,12 +30,7 @@ class ListActivity : AppCompatActivity() {
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.menu_main, menu)
-        menu?.apply {
-            findItem(R.id.menu_signout).isVisible = true
-            findItem(R.id.menu_edit).isVisible = false
-            findItem(R.id.menu_done).isVisible = false
-        }
+        menuInflater.inflate(R.menu.menu_list, menu)
         return true
     }
 
@@ -62,8 +57,10 @@ class ListActivity : AppCompatActivity() {
                 }
                 val newList = list?.map {
                     NoteDataWithId(
-                        it.getString(NoteDataWithId.KEY_DATE), it.getString(NoteDataWithId.KEY_TITLE),
-                        it.getString(NoteDataWithId.KEY_DETAIL), it.id
+                        it.getString(NoteDataWithId.KEY_DATE),
+                        it.getString(NoteDataWithId.KEY_TITLE),
+                        it.getString(NoteDataWithId.KEY_DETAIL),
+                        it.id
                     )
                 }
 
@@ -101,7 +98,7 @@ class ListActivity : AppCompatActivity() {
             setTitle("削除")
             setMessage("削除してもいいですか")
             setPositiveButton("はい") { dialog, which ->
-                val a = database.collection("users").document(userId)
+                database.collection("users").document(userId)
                     .collection("notes").document(data.id!!).delete()
                     .addOnSuccessListener {
                         Toast.makeText(this@ListActivity, "削除されました", Toast.LENGTH_SHORT).show()
