@@ -68,7 +68,7 @@ class ListActivity : AppCompatActivity() {
                 }
 
                 if (newList != null) {
-                    val viewAdapter = MyAdapter(newList,
+                    val myAdapter = MyAdapter(newList,
                         object : MyAdapter.OnClickNoteListener {
                             override fun OnClick(data: NoteDataList) {
                                 val intent = DetailActivity.getLaunchIntent(this@ListActivity, data)
@@ -79,11 +79,11 @@ class ListActivity : AppCompatActivity() {
                                 deleteData(data)
                             }
                         })
-                    val viewManager = LinearLayoutManager(this)
+                    val manager = LinearLayoutManager(this)
                     recycler_view.apply {
                         setHasFixedSize(true)
-                        layoutManager = viewManager
-                        adapter = viewAdapter
+                        layoutManager = manager
+                        adapter = myAdapter
                     }
                 }
             }
