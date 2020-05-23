@@ -5,17 +5,14 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import android.view.Menu
-import android.view.MenuItem
+import android.view.*
+import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.android.synthetic.main.activity_list.*
-import kotlinx.android.synthetic.main.activity_list.recycler_view
-import kotlinx.android.synthetic.main.activity_list.view.*
-import java.sql.Timestamp
-import java.util.*
 
 class ListActivity : AppCompatActivity() {
 
@@ -26,7 +23,6 @@ class ListActivity : AppCompatActivity() {
         setupUI()
         showList()
         floating_button.setOnClickListener {
-
             startActivity(EditActivity.getLaunchIntent(this))
         }
     }
@@ -43,26 +39,26 @@ class ListActivity : AppCompatActivity() {
                     list?.add(document)
                 }
                 val newList = list?.map {
-                    NoteData(
-                        it.getString(NoteData.KEY_DATE),
-                        it.getString(NoteData.KEY_TITLE),
-                        it.getString(NoteData.KEY_DETAIL)
-                    )
+                    NoteDataWithId(it.getString(NoteDataWithId.KEY_DATE), it.getString(NoteDataWithId.KEY_TITLE),
+                        it.getString(NoteDataWithId.KEY_DETAIL), it.id)
                 }
 
                 if (newList != null) {
-                    val viewAdapter = MyAdapter(newList,
+                    val myAdapter = MyAdapter(newList,
                         object : MyAdapter.OnClickNoteListener {
-                            override fun OnClick(data : NoteData) {
+                            override fun OnClick(data : NoteDataWithId){
                                 val intent = DetailActivity.getLaunchIntent(this@ListActivity, data)
                                 startActivity(intent)
                             }
+                            override fun OnLongClick(data : NoteDataWithId) {
+                                deleteData(data)
+                            }
                         })
-                    val viewManager = LinearLayoutManager(this)
+                    val manager = LinearLayoutManager(this)
                     recycler_view.apply {
                         setHasFixedSize(true)
-                        layoutManager = viewManager
-                        adapter = viewAdapter
+                        layoutManager = manager
+                        adapter = myAdapter
                     }
                 }
             }
@@ -70,6 +66,28 @@ class ListActivity : AppCompatActivity() {
                 Log.d("CHECK THIS", "Error getting documents: ", exception)
             }
 
+    }
+
+    private fun deleteData(noteData: NoteDataWithId) {
+        val database = FirebaseFirestore.getInstance()
+        val userId = FirebaseAuth.getInstance().currentUser!!.uid
+
+        AlertDialog.Builder(this@ListActivity).apply {
+            setTitle("削除")
+            setMessage("削除してもいいですか")
+            setPositiveButton("はい") { dialog, which ->
+                database.collection("users").document(userId)
+                    .collection("notes").document(noteData.id!!).delete()
+                    .addOnSuccessListener {
+                        Toast.makeText(this@ListActivity, "削除されました", Toast.LENGTH_SHORT).show()
+                        showList()
+                    }.addOnFailureListener {
+                        Toast.makeText(this@ListActivity, "削除されませんでした", Toast.LENGTH_SHORT).show()
+                    }
+            }
+            setNegativeButton("いいえ") { dialog, which -> }
+            show()
+        }
     }
 
     private fun setupUI() {
