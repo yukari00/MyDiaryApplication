@@ -61,21 +61,21 @@ class ListActivity : AppCompatActivity() {
                     list?.add(document)
                 }
                 val newList = list?.map {
-                    NoteDataList(
-                        it.getString(NoteDataList.KEY_DATE), it.getString(NoteDataList.KEY_TITLE),
-                        it.getString(NoteDataList.KEY_DETAIL), it.id
+                    NoteDataWithId(
+                        it.getString(NoteDataWithId.KEY_DATE), it.getString(NoteDataWithId.KEY_TITLE),
+                        it.getString(NoteDataWithId.KEY_DETAIL), it.id
                     )
                 }
 
                 if (newList != null) {
                     val myAdapter = MyAdapter(newList,
                         object : MyAdapter.OnClickNoteListener {
-                            override fun OnClick(data: NoteDataList) {
+                            override fun OnClick(data: NoteDataWithId) {
                                 val intent = DetailActivity.getLaunchIntent(this@ListActivity, data)
                                 startActivity(intent)
                             }
 
-                            override fun OnLongClick(data: NoteDataList) {
+                            override fun OnLongClick(data: NoteDataWithId) {
                                 deleteData(data)
                             }
                         })
@@ -93,7 +93,7 @@ class ListActivity : AppCompatActivity() {
 
     }
 
-    private fun deleteData(data: NoteDataList) {
+    private fun deleteData(data: NoteDataWithId) {
         val database = FirebaseFirestore.getInstance()
         val userId = FirebaseAuth.getInstance().currentUser!!.uid
 
