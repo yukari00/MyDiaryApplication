@@ -13,11 +13,6 @@
         android:title="Signout"
         app:showAsAction="ifRoom" />
     <item
-        android:id="@+id/menu_back"
-        android:icon="@drawable/ic_arrow_back_black_24dp"
-        android:title="Back"
-        app:showAsAction="ifRoom" />
-    <item
         android:id="@+id/menu_done"
         android:icon="@drawable/ic_done_black_24dp"
         android:title="done"

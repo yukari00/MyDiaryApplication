@@ -17,6 +17,7 @@ class DetailActivity : AppCompatActivity() {
 
         val toolbar = findViewById<androidx.appcompat.widget.Toolbar>(R.id.toolbar)
         setSupportActionBar(toolbar)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         if(intent.extras == null){
             Toast.makeText(this, "エラーが発生しました", Toast.LENGTH_LONG).show()
@@ -35,7 +36,6 @@ class DetailActivity : AppCompatActivity() {
         menuInflater.inflate(R.menu.menu_main, menu)
         menu?.apply {
             findItem(R.id.menu_signout).isVisible = false
-            findItem(R.id.menu_back).isVisible = true
             findItem(R.id.menu_edit).isVisible = true
             findItem(R.id.menu_done).isVisible = false
         }
@@ -44,10 +44,6 @@ class DetailActivity : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-            R.id.menu_back -> {
-                finish()
-                return true
-            }
             R.id.menu_edit -> {
                 //Todo データを持って編集画面へ
                 return true

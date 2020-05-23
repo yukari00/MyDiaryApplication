@@ -33,7 +33,6 @@ class ListActivity : AppCompatActivity() {
         menuInflater.inflate(R.menu.menu_main, menu)
         menu?.apply {
             findItem(R.id.menu_signout).isVisible = true
-            findItem(R.id.menu_back).isVisible = false
             findItem(R.id.menu_edit).isVisible = false
             findItem(R.id.menu_done).isVisible = false
         }

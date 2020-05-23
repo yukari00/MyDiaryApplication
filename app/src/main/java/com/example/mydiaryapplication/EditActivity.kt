@@ -22,6 +22,7 @@ class EditActivity : AppCompatActivity() {
 
         val toolbar = findViewById<androidx.appcompat.widget.Toolbar>(R.id.toolbar)
         setSupportActionBar(toolbar)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
     }
 
@@ -29,7 +30,6 @@ class EditActivity : AppCompatActivity() {
         menuInflater.inflate(R.menu.menu_main, menu)
         menu?.apply {
             findItem(R.id.menu_signout).isVisible = false
-            findItem(R.id.menu_back).isVisible = true
             findItem(R.id.menu_edit).isVisible = false
             findItem(R.id.menu_done).isVisible = true
         }
@@ -38,10 +38,6 @@ class EditActivity : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-            R.id.menu_back -> {
-                finish()
-                return true
-            }
             R.id.menu_done -> {
                 addNewData()
                 return true
