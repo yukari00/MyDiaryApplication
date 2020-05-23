@@ -37,17 +37,17 @@ class EditActivity : AppCompatActivity() {
         id = bundle.getString(INTENT_KEY_ID)
         status = bundle.getString(INTENT_KEY_STATUS)
 
-        val database = FirebaseFirestore.getInstance()
-        val userId = FirebaseAuth.getInstance().currentUser!!.uid
+        if (status == STATUS_EDIT) {
+            val database = FirebaseFirestore.getInstance()
+            val userId = FirebaseAuth.getInstance().currentUser!!.uid
 
-        val docRef = database.collection("users").document(userId)
-            .collection("notes").document(id!!)
+            val docRef = database.collection("users").document(userId)
+                .collection("notes").document(id!!)
 
-        docRef.get().addOnSuccessListener {
-            val title = it[NoteData.KEY_TITLE] as String
-            val detail = it[NoteData.KEY_DETAIL] as String
+            docRef.get().addOnSuccessListener {
+                val title = it[NoteData.KEY_TITLE] as String
+                val detail = it[NoteData.KEY_DETAIL] as String
 
-            if(status == STATUS_EDIT){
                 input_edit_title.setText(title)
                 input_edit_detail.setText(detail)
             }
