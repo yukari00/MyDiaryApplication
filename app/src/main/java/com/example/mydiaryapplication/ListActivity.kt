@@ -24,7 +24,7 @@ class ListActivity : AppCompatActivity() {
         setSupportActionBar(toolbar)
 
         floating_button.setOnClickListener {
-            startActivity(EditActivity.getLaunchIntent(this, "", STATUS_NEW))
+            startActivity(EditActivity.getLaunchIntent(this, null))
         }
     }
 
@@ -123,8 +123,6 @@ class ListActivity : AppCompatActivity() {
     }
 
     companion object {
-
-        private const val STATUS_NEW = "STATUS_NEW"
 
         fun getLaunchIntent(from: Context) = Intent(from, ListActivity::class.java).apply {
             addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)

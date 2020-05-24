@@ -55,15 +55,15 @@ class DetailActivity : AppCompatActivity() {
     }
 
     private fun goEdit() {
-        startActivity(EditActivity.getLaunchIntent(this, id, STATUS_EDIT))
+        startActivity(EditActivity.getLaunchIntent(this, id))
     }
 
     private fun update() {
         val database = FirebaseFirestore.getInstance()
         val userId = FirebaseAuth.getInstance().currentUser!!.uid
 
-        val docRef = database.collection("users").document(userId)
-            .collection("notes").document(id!!)
+        val docRef = database.collection(COLLECTION_USERS).document(userId)
+            .collection(COLLECTION_NOTES).document(id!!)
 
         docRef.get().addOnSuccessListener {
             val date = it[NoteDataWithId.KEY_DATE] as String
@@ -80,7 +80,9 @@ class DetailActivity : AppCompatActivity() {
     companion object {
 
         private const val INTENT_KEY_ID = "INTENT_KEY_ID"
-        private const val STATUS_EDIT = "STATUS_EDIT"
+
+        private const val COLLECTION_USERS = "users"
+        private const val COLLECTION_NOTES = "notes"
 
         fun getLaunchIntent(from: Context, data: NoteDataWithId) =
             Intent(from, DetailActivity::class.java).apply {

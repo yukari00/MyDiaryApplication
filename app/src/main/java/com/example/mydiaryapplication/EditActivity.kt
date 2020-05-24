@@ -16,7 +16,7 @@ import java.util.*
 
 class EditActivity : AppCompatActivity() {
 
-    private var status: String? = ""
+    private var status: Status? = null
     private var id: String? = ""
 
     lateinit var database: FirebaseFirestore
@@ -36,14 +36,18 @@ class EditActivity : AppCompatActivity() {
 
         val bundle = intent.extras!!
         id = bundle.getString(INTENT_KEY_ID)
-        status = bundle.getString(INTENT_KEY_STATUS)
+        status = if(id == null){
+            Status.NEW_ENTRY
+        }else{
+            Status.EDIT
+        }
 
-        if (status == STATUS_EDIT) {
+        if (status == Status.EDIT) {
             val database = FirebaseFirestore.getInstance()
             val userId = FirebaseAuth.getInstance().currentUser!!.uid
 
-            val docRef = database.collection("users").document(userId)
-                .collection("notes").document(id!!)
+            val docRef = database.collection(COLLECTION_USERS).document(userId)
+                .collection(COLLECTION_NOTES).document(id!!)
 
             docRef.get().addOnSuccessListener {
                 val title = it[NoteDataWithId.KEY_TITLE] as String
@@ -86,8 +90,8 @@ class EditActivity : AppCompatActivity() {
         }
 
         when (status) {
-            STATUS_NEW -> addNewData(title, detail)
-            STATUS_EDIT -> edit(title, detail)
+            Status.NEW_ENTRY -> addNewData(title, detail)
+            Status.EDIT -> edit(title, detail)
         }
         return true
     }
@@ -99,7 +103,7 @@ class EditActivity : AppCompatActivity() {
         val date = dateFormat.format(Date())
 
         val newData = NoteData(date, title, detail)
-        database.collection("users").document(user).collection("notes").add(newData)
+        database.collection(COLLECTION_USERS).document(user).collection(COLLECTION_NOTES).add(newData)
             .addOnSuccessListener {
                 Log.d("TAG", "DocumentSnapshot successfully written!")
                 Toast.makeText(this, "登録が完了しました", Toast.LENGTH_LONG).show()
@@ -120,7 +124,7 @@ class EditActivity : AppCompatActivity() {
 
         val newData = NoteData(date, title, detail)
 
-        database.collection("users").document(user).collection("notes")
+        database.collection(COLLECTION_USERS).document(user).collection(COLLECTION_NOTES)
             .document(id!!).set(newData).addOnSuccessListener {
                 Log.d("TAG", "DocumentSnapshot successfully written!")
                 Toast.makeText(this, "登録が完了しました", Toast.LENGTH_LONG).show()
@@ -137,14 +141,12 @@ class EditActivity : AppCompatActivity() {
     companion object {
 
         private const val INTENT_KEY_ID = "INTENT_KEY_ID"
-        private const val INTENT_KEY_STATUS = "INTENT_KEY_STATUS"
 
-        private const val STATUS_NEW = "STATUS_NEW"
-        private const val STATUS_EDIT = "STATUS_EDIT"
+        private const val COLLECTION_USERS = "users"
+        private const val COLLECTION_NOTES = "notes"
 
-        fun getLaunchIntent(from: Context, id: String?, status: String?) =
+        fun getLaunchIntent(from: Context, id: String?) =
             Intent(from, EditActivity::class.java).apply {
-                putExtra(INTENT_KEY_STATUS, status)
                 putExtra(INTENT_KEY_ID, id)
             }
     }
