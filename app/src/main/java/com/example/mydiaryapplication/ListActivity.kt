@@ -20,10 +20,27 @@ class ListActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_list)
 
-        setupUI()
+        val toolbar = findViewById<androidx.appcompat.widget.Toolbar>(R.id.toolbar)
+        setSupportActionBar(toolbar)
+
         showList()
         floating_button.setOnClickListener {
             startActivity(EditActivity.getLaunchIntent(this))
+        }
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.menu_list, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.menu_signout -> {
+                signOut()
+                return true
+            }
+            else -> return super.onOptionsItemSelected(item)
         }
     }
 
@@ -39,18 +56,23 @@ class ListActivity : AppCompatActivity() {
                     list?.add(document)
                 }
                 val newList = list?.map {
-                    NoteDataWithId(it.getString(NoteDataWithId.KEY_DATE), it.getString(NoteDataWithId.KEY_TITLE),
-                        it.getString(NoteDataWithId.KEY_DETAIL), it.id)
+                    NoteDataWithId(
+                        it.getString(NoteDataWithId.KEY_DATE),
+                        it.getString(NoteDataWithId.KEY_TITLE),
+                        it.getString(NoteDataWithId.KEY_DETAIL),
+                        it.id
+                    )
                 }
 
                 if (newList != null) {
                     val myAdapter = MyAdapter(newList,
                         object : MyAdapter.OnClickNoteListener {
-                            override fun OnClick(data : NoteDataWithId){
+                            override fun OnClick(data: NoteDataWithId) {
                                 val intent = DetailActivity.getLaunchIntent(this@ListActivity, data)
                                 startActivity(intent)
                             }
-                            override fun OnLongClick(data : NoteDataWithId) {
+
+                            override fun OnLongClick(data: NoteDataWithId) {
                                 deleteData(data)
                             }
                         })
@@ -68,7 +90,7 @@ class ListActivity : AppCompatActivity() {
 
     }
 
-    private fun deleteData(noteData: NoteDataWithId) {
+    private fun deleteData(data: NoteDataWithId) {
         val database = FirebaseFirestore.getInstance()
         val userId = FirebaseAuth.getInstance().currentUser!!.uid
 
@@ -77,7 +99,7 @@ class ListActivity : AppCompatActivity() {
             setMessage("削除してもいいですか")
             setPositiveButton("はい") { dialog, which ->
                 database.collection("users").document(userId)
-                    .collection("notes").document(noteData.id!!).delete()
+                    .collection("notes").document(data.id!!).delete()
                     .addOnSuccessListener {
                         Toast.makeText(this@ListActivity, "削除されました", Toast.LENGTH_SHORT).show()
                         showList()
@@ -87,12 +109,6 @@ class ListActivity : AppCompatActivity() {
             }
             setNegativeButton("いいえ") { dialog, which -> }
             show()
-        }
-    }
-
-    private fun setupUI() {
-        sign_out_button.setOnClickListener {
-            signOut()
         }
     }
 
