@@ -1,5 +1,30 @@
 <resources>
     <string name="app_name">MyDiaryApplication</string>
 
-    <string name="detail_date">今日の日付</string>
+    <!--レイアウト-->
+    <string name="date">日付</string>
+    <string name="title">タイトル</string>
+    <string name="detail">テキスト内容</string>
+
+    <!--エラー時-->
+    <string name="error">エラーが発生しました</string>
+    <string name="enter_something">入力してください</string>
+
+    <!--削除AlertDialog-->
+    <string name="delete_title">削除</string>
+    <string name="delete_message">削除してもいいですか</string>
+    <string name="delete_success_toast">削除されました</string>
+    <string name="delete_failure_toast">削除されませんでした</string>
+
+    <!--ダイアログの返事 -->
+    <string name="yes">はい</string>
+    <string name="no">いいえ</string>
+
+    <!--SimpleDateFormat-->
+    <string name="simple_date_format">yyyy年MM月dd日(E) HH:mm</string>
+    
+    <!--登録-->
+    <string name="save_success">登録が完了しました</string>
+    <string name="save_failure">登録ができませんでした</string>
+
 </resources>

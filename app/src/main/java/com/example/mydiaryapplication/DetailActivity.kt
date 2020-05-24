@@ -24,7 +24,7 @@ class DetailActivity : AppCompatActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         if (intent.extras == null) {
-            Toast.makeText(this, "エラーが発生しました", Toast.LENGTH_LONG).show()
+            Toast.makeText(this, getString(R.string.error), Toast.LENGTH_LONG).show()
             finish()
         }
 
