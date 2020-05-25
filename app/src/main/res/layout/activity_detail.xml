@@ -20,7 +20,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
-        android:text="日付"
+        android:text="@string/date"
         android:textSize="18sp" />
 
     <TextView
@@ -28,7 +28,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
-        android:text="@string/detail_date"
+        android:text="@string/title"
         android:textSize="24sp" />
 
     <TextView
@@ -39,7 +39,7 @@
         android:layout_marginTop="0dp"
         android:layout_marginRight="16dp"
         android:layout_marginBottom="16dp"
-        android:text="テキスト内容"
+        android:text="@string/detail"
         android:textSize="18sp" />
 
 </LinearLayout>

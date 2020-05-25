@@ -99,19 +99,19 @@ class ListActivity : AppCompatActivity() {
     private fun deleteData(data: NoteDataWithId) {
 
         AlertDialog.Builder(this@ListActivity).apply {
-            setTitle("削除")
-            setMessage("削除してもいいですか")
-            setPositiveButton("はい") { dialog, which ->
+            setTitle(getString(R.string.delete_title))
+            setMessage(getString(R.string.delete_message))
+            setPositiveButton(getString(R.string.yes)) { dialog, which ->
                 database.collection(COLLECTION_USERS).document(userId)
                     .collection(COLLECTION_NOTES).document(data.id!!).delete()
                     .addOnSuccessListener {
-                        Toast.makeText(this@ListActivity, "削除されました", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this@ListActivity, getString(R.string.delete_success_toast), Toast.LENGTH_SHORT).show()
                         showList()
                     }.addOnFailureListener {
-                        Toast.makeText(this@ListActivity, "削除されませんでした", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this@ListActivity, getString(R.string.delete_failure_toast), Toast.LENGTH_SHORT).show()
                     }
             }
-            setNegativeButton("いいえ") { dialog, which -> }
+            setNegativeButton(getString(R.string.no)) { dialog, which -> }
             show()
         }
     }
