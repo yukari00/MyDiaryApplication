@@ -16,6 +16,11 @@ import java.util.*
 
 class EditActivity : AppCompatActivity() {
 
+    private var status: Status? = null
+    private var id: String? = null
+
+    private val database = FirebaseFirestore.getInstance()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_edit)
@@ -24,6 +29,33 @@ class EditActivity : AppCompatActivity() {
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
+        if (intent.extras == null) {
+            Toast.makeText(this, "エラーが発生しました", Toast.LENGTH_LONG).show()
+            finish()
+        }
+
+        val bundle = intent.extras!!
+        id = bundle.getString(INTENT_KEY_ID)
+        status = if(id == null){
+            Status.NEW_ENTRY
+        }else{
+            Status.EDIT
+        }
+
+        if (status == Status.EDIT) {
+            val userId = FirebaseAuth.getInstance().currentUser!!.uid
+
+            val docRef = database.collection(COLLECTION_USERS).document(userId)
+                .collection(COLLECTION_NOTES).document(id!!)
+
+            docRef.get().addOnSuccessListener {
+                val title = it[NoteDataWithId.KEY_TITLE] as String
+                val detail = it[NoteDataWithId.KEY_DETAIL] as String
+
+                input_edit_title.setText(title)
+                input_edit_detail.setText(detail)
+            }
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -34,35 +66,47 @@ class EditActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.menu_done -> {
-                addNewData()
+                if(isFilled()){
+                    save()
+                }
                 return true
             }
             else -> return super.onOptionsItemSelected(item)
         }
     }
 
-    private fun addNewData() {
-
-        val database = FirebaseFirestore.getInstance()
+    private fun save() {
 
         val title = input_edit_title.text.toString()
         val detail = input_edit_detail.text.toString()
 
-        if (title == "") {
+        when (status) {
+            Status.NEW_ENTRY -> addNewData(title, detail)
+            Status.EDIT -> edit(title, detail)
+        }
+    }
+
+    private fun isFilled(): Boolean {
+
+        if ( input_edit_title.text.toString() == "") {
             input_title.error = "入力してください"
-            return
+            return false
         }
-        if (detail == "") {
+        if ( input_edit_detail.text.toString() == "") {
             input_detail.error = "入力してください"
-            return
+            return false
         }
+        return true
+    }
+
+    private fun addNewData(title: String, detail: String) {
 
         val user = FirebaseAuth.getInstance().currentUser!!.uid
         val dateFormat = SimpleDateFormat("yyyy年MM月dd日(E) HH:mm")
         val date = dateFormat.format(Date())
 
         val newData = NoteData(date, title, detail)
-        database.collection("users").document(user).collection("notes").add(newData)
+        database.collection(COLLECTION_USERS).document(user).collection(COLLECTION_NOTES).add(newData)
             .addOnSuccessListener {
                 Log.d("TAG", "DocumentSnapshot successfully written!")
                 Toast.makeText(this, "登録が完了しました", Toast.LENGTH_LONG).show()
@@ -75,8 +119,39 @@ class EditActivity : AppCompatActivity() {
             }
     }
 
+    private fun edit(title: String, detail: String) {
+
+        val user = FirebaseAuth.getInstance().currentUser!!.uid
+        val dateFormat = SimpleDateFormat("yyyy年MM月dd日(E) HH:mm")
+        val date = dateFormat.format(Date())
+
+        val newData = NoteData(date, title, detail)
+
+        database.collection(COLLECTION_USERS).document(user).collection(COLLECTION_NOTES)
+            .document(id!!).set(newData).addOnSuccessListener {
+                Log.d("TAG", "DocumentSnapshot successfully written!")
+                Toast.makeText(this, "登録が完了しました", Toast.LENGTH_LONG).show()
+                finish()
+
+            }
+            .addOnFailureListener { e ->
+                Log.w("TAG", "Error writing document", e)
+                Toast.makeText(this, "登録ができませんでした", Toast.LENGTH_LONG).show()
+            }
+
+    }
+
     companion object {
-        fun getLaunchIntent(from: Context) = Intent(from, EditActivity::class.java)
+
+        private const val INTENT_KEY_ID = "INTENT_KEY_ID"
+
+        private const val COLLECTION_USERS = "users"
+        private const val COLLECTION_NOTES = "notes"
+
+        fun getLaunchIntent(from: Context, id: String?) =
+            Intent(from, EditActivity::class.java).apply {
+                putExtra(INTENT_KEY_ID, id)
+            }
     }
 
 }

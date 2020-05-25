@@ -7,9 +7,13 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.android.synthetic.main.activity_detail.*
 
 class DetailActivity : AppCompatActivity() {
+
+    private var id: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -19,17 +23,14 @@ class DetailActivity : AppCompatActivity() {
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        if(intent.extras == null){
+        if (intent.extras == null) {
             Toast.makeText(this, "エラーが発生しました", Toast.LENGTH_LONG).show()
             finish()
         }
 
         val bundle = intent.extras!!
-        val date = bundle.getString(INTENT_KEY_DATE)!!
-        val title = bundle.getString(INTENT_KEY_TITLE)!!
-        val detail = bundle.getString(INTENT_KEY_DETAIL)!!
+        id = bundle.getString(INTENT_KEY_ID)
 
-        update(date, title, detail)
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -40,30 +41,52 @@ class DetailActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.menu_edit -> {
-                //Todo データを持って編集画面へ
+                goEdit()
                 return true
             }
             else -> return super.onOptionsItemSelected(item)
         }
     }
 
-    private fun update(date: String, title: String, detail: String) {
-        detail_date.text = date
-        detail_title.text = title
-        detail_detail.text = detail
+    override fun onResume() {
+        super.onResume()
+
+        update()
+    }
+
+    private fun goEdit() {
+        startActivity(EditActivity.getLaunchIntent(this, id))
+    }
+
+    private fun update() {
+        val database = FirebaseFirestore.getInstance()
+        val userId = FirebaseAuth.getInstance().currentUser!!.uid
+
+        val docRef = database.collection(COLLECTION_USERS).document(userId)
+            .collection(COLLECTION_NOTES).document(id!!)
+
+        docRef.get().addOnSuccessListener {
+            val date = it[NoteDataWithId.KEY_DATE] as String
+            val title = it[NoteDataWithId.KEY_TITLE] as String
+            val detail = it[NoteDataWithId.KEY_DETAIL] as String
+
+            detail_date.text = date
+            detail_title.text = title
+            detail_detail.text = detail
+        }
+
     }
 
     companion object {
 
-        private const val INTENT_KEY_DATE = "INTENT_KEY_DATE"
-        private const val INTENT_KEY_TITLE = "INTENT_KEY_TITLE"
-        private const val INTENT_KEY_DETAIL = "INTENT_KEY_DETAIL"
+        private const val INTENT_KEY_ID = "INTENT_KEY_ID"
+
+        private const val COLLECTION_USERS = "users"
+        private const val COLLECTION_NOTES = "notes"
 
         fun getLaunchIntent(from: Context, data: NoteDataWithId) =
             Intent(from, DetailActivity::class.java).apply {
-                putExtra(INTENT_KEY_DATE, data.date)
-                putExtra(INTENT_KEY_TITLE, data.title)
-                putExtra(INTENT_KEY_DETAIL, data.detail)
+                putExtra(INTENT_KEY_ID, data.id)
             }
 
     }

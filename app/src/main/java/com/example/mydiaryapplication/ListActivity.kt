@@ -16,6 +16,9 @@ import kotlinx.android.synthetic.main.activity_list.*
 
 class ListActivity : AppCompatActivity() {
 
+    private val database = FirebaseFirestore.getInstance()
+    private val userId = FirebaseAuth.getInstance().currentUser!!.uid
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_list)
@@ -23,9 +26,8 @@ class ListActivity : AppCompatActivity() {
         val toolbar = findViewById<androidx.appcompat.widget.Toolbar>(R.id.toolbar)
         setSupportActionBar(toolbar)
 
-        showList()
         floating_button.setOnClickListener {
-            startActivity(EditActivity.getLaunchIntent(this))
+            startActivity(EditActivity.getLaunchIntent(this, null))
         }
     }
 
@@ -44,12 +46,16 @@ class ListActivity : AppCompatActivity() {
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+
+        showList()
+    }
+
     private fun showList() {
-        val database = FirebaseFirestore.getInstance()
-        val userId = FirebaseAuth.getInstance().currentUser!!.uid
 
         val list: MutableList<DocumentSnapshot>? = mutableListOf()
-        database.collection("users").document(userId).collection("notes")
+        database.collection(COLLECTION_USERS).document(userId).collection(COLLECTION_NOTES)
             .get().addOnSuccessListener { result ->
                 for (document in result) {
                     Log.d("CHECK THIS", "${document.id} => ${document.data}")
@@ -91,15 +97,13 @@ class ListActivity : AppCompatActivity() {
     }
 
     private fun deleteData(data: NoteDataWithId) {
-        val database = FirebaseFirestore.getInstance()
-        val userId = FirebaseAuth.getInstance().currentUser!!.uid
 
         AlertDialog.Builder(this@ListActivity).apply {
             setTitle("削除")
             setMessage("削除してもいいですか")
             setPositiveButton("はい") { dialog, which ->
-                database.collection("users").document(userId)
-                    .collection("notes").document(data.id!!).delete()
+                database.collection(COLLECTION_USERS).document(userId)
+                    .collection(COLLECTION_NOTES).document(data.id!!).delete()
                     .addOnSuccessListener {
                         Toast.makeText(this@ListActivity, "削除されました", Toast.LENGTH_SHORT).show()
                         showList()
@@ -118,6 +122,10 @@ class ListActivity : AppCompatActivity() {
     }
 
     companion object {
+
+        private const val COLLECTION_USERS = "users"
+        private const val COLLECTION_NOTES = "notes"
+
         fun getLaunchIntent(from: Context) = Intent(from, ListActivity::class.java).apply {
             addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
         }
