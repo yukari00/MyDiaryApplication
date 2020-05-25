@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.example.mydiaryapplication.databinding.RecyclerTextBinding
 import kotlinx.android.synthetic.main.recycler_text.view.*
 
 class MyAdapter(val data : List<NoteDataWithId>, val listener : OnClickNoteListener) : RecyclerView.Adapter<MyAdapter.MyViewHolder>() {
@@ -13,25 +14,27 @@ class MyAdapter(val data : List<NoteDataWithId>, val listener : OnClickNoteListe
         fun OnLongClick(data : NoteDataWithId)
     }
 
-    class MyViewHolder(val view: View) : RecyclerView.ViewHolder(view)
+    class MyViewHolder(val binding : RecyclerTextBinding ) : RecyclerView.ViewHolder(binding.root)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyAdapter.MyViewHolder {
-        val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.recycler_text, parent, false)
-        return MyViewHolder(view)
+        val layoutInflater = LayoutInflater.from(parent.context)
+        val binding = RecyclerTextBinding.inflate(layoutInflater, parent, false)
+
+        return MyViewHolder(binding)
+
     }
 
     override fun getItemCount(): Int = data.size
 
     override fun onBindViewHolder(holder: MyAdapter.MyViewHolder, position: Int) {
         val item = data[position]
-        holder.view.card_date.text = data[position].date
-        holder.view.card_title.text = data[position].title
 
-        holder.view.card_view.setOnClickListener{
+        holder.binding.noteDataWithId = item
+
+        holder.binding.cardView.setOnClickListener{
             listener.OnClick(item)
         }
-        holder.view.card_view.setOnLongClickListener{
+        holder.binding.cardView.setOnLongClickListener{
             listener.OnLongClick(item)
             true
         }
