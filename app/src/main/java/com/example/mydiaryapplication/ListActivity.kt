@@ -8,16 +8,18 @@ import android.util.Log
 import android.view.*
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.mydiaryapplication.databinding.ActivityListBinding
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
-import kotlinx.android.synthetic.main.activity_list.*
 
 class ListActivity : AppCompatActivity() {
 
     private val database = FirebaseFirestore.getInstance()
     private val userId = FirebaseAuth.getInstance().currentUser!!.uid
+    val binding = DataBindingUtil.setContentView<ActivityListBinding>(this, R.layout.activity_list)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -26,7 +28,9 @@ class ListActivity : AppCompatActivity() {
         val toolbar = findViewById<androidx.appcompat.widget.Toolbar>(R.id.toolbar)
         setSupportActionBar(toolbar)
 
-        floating_button.setOnClickListener {
+
+
+        binding.floatingButton.setOnClickListener {
             startActivity(EditActivity.getLaunchIntent(this, null))
         }
     }
@@ -83,7 +87,7 @@ class ListActivity : AppCompatActivity() {
                             }
                         })
                     val manager = LinearLayoutManager(this)
-                    recycler_view.apply {
+                    binding.recyclerView.apply {
                         setHasFixedSize(true)
                         layoutManager = manager
                         adapter = myAdapter

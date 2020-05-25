@@ -1,11 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
+<layout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
     tools:context=".MainActivity">
+
+    <data>
+        <import type="android.view.View" />
+        <variable
+            name = "model"
+            type = "com.example.mydiaryapplication.Model"/>
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
     <com.google.android.gms.common.SignInButton
         android:id="@+id/google_button"
@@ -22,3 +31,4 @@
         app:layout_constraintTop_toTopOf="parent"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

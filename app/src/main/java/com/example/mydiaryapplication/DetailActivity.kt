@@ -7,13 +7,15 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
+import androidx.databinding.DataBindingUtil
+import com.example.mydiaryapplication.databinding.ActivityDetailBinding
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
-import kotlinx.android.synthetic.main.activity_detail.*
 
 class DetailActivity : AppCompatActivity() {
 
     private var id: String? = null
+    val binding = DataBindingUtil.setContentView<ActivityDetailBinding>(this, R.layout.activity_list)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -70,9 +72,9 @@ class DetailActivity : AppCompatActivity() {
             val title = it[NoteDataWithId.KEY_TITLE] as String
             val detail = it[NoteDataWithId.KEY_DETAIL] as String
 
-            detail_date.text = date
-            detail_title.text = title
-            detail_detail.text = detail
+            binding.detailDate.text = date
+            binding.detailTitle.text = title
+            binding.detailDetail.text = detail
         }
 
     }
