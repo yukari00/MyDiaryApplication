@@ -17,9 +17,9 @@ import java.util.*
 class EditActivity : AppCompatActivity() {
 
     private var status: Status? = null
-    private var id: String? = ""
+    private var id: String? = null
 
-    lateinit var database: FirebaseFirestore
+    private val database = FirebaseFirestore.getInstance()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,7 +30,7 @@ class EditActivity : AppCompatActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         if (intent.extras == null) {
-            Toast.makeText(this, getString(R.string.error), Toast.LENGTH_LONG).show()
+            Toast.makeText(this, "エラーが発生しました", Toast.LENGTH_LONG).show()
             finish()
         }
 
@@ -43,7 +43,6 @@ class EditActivity : AppCompatActivity() {
         }
 
         if (status == Status.EDIT) {
-            val database = FirebaseFirestore.getInstance()
             val userId = FirebaseAuth.getInstance().currentUser!!.uid
 
             val docRef = database.collection(COLLECTION_USERS).document(userId)
@@ -67,31 +66,35 @@ class EditActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.menu_done -> {
-                checkIt()
+                if(isFilled()){
+                    save()
+                }
                 return true
             }
             else -> return super.onOptionsItemSelected(item)
         }
     }
 
-    private fun checkIt(): Boolean {
-        database = FirebaseFirestore.getInstance()
+    private fun save() {
 
         val title = input_edit_title.text.toString()
         val detail = input_edit_detail.text.toString()
 
-        if (title == "") {
-            input_title.error = getString(R.string.enter_something)
-            return false
-        }
-        if (detail == "") {
-            input_detail.error = getString(R.string.enter_something)
-            return false
-        }
-
         when (status) {
             Status.NEW_ENTRY -> addNewData(title, detail)
             Status.EDIT -> edit(title, detail)
+        }
+    }
+
+    private fun isFilled(): Boolean {
+
+        if ( input_edit_title.text.toString() == "") {
+            input_title.error = "入力してください"
+            return false
+        }
+        if ( input_edit_detail.text.toString() == "") {
+            input_detail.error = "入力してください"
+            return false
         }
         return true
     }
@@ -99,27 +102,27 @@ class EditActivity : AppCompatActivity() {
     private fun addNewData(title: String, detail: String) {
 
         val user = FirebaseAuth.getInstance().currentUser!!.uid
-        val dateFormat = SimpleDateFormat(getString(R.string.simple_date_format))
+        val dateFormat = SimpleDateFormat("yyyy年MM月dd日(E) HH:mm")
         val date = dateFormat.format(Date())
 
         val newData = NoteData(date, title, detail)
         database.collection(COLLECTION_USERS).document(user).collection(COLLECTION_NOTES).add(newData)
             .addOnSuccessListener {
                 Log.d("TAG", "DocumentSnapshot successfully written!")
-                Toast.makeText(this, getString(R.string.save_success), Toast.LENGTH_LONG).show()
+                Toast.makeText(this, "登録が完了しました", Toast.LENGTH_LONG).show()
                 finish()
 
             }
             .addOnFailureListener { e ->
                 Log.w("TAG", "Error writing document", e)
-                Toast.makeText(this, getString(R.string.save_failure), Toast.LENGTH_LONG).show()
+                Toast.makeText(this, "登録ができませんでした", Toast.LENGTH_LONG).show()
             }
     }
 
     private fun edit(title: String, detail: String) {
 
         val user = FirebaseAuth.getInstance().currentUser!!.uid
-        val dateFormat = SimpleDateFormat(getString(R.string.simple_date_format))
+        val dateFormat = SimpleDateFormat("yyyy年MM月dd日(E) HH:mm")
         val date = dateFormat.format(Date())
 
         val newData = NoteData(date, title, detail)
@@ -127,13 +130,13 @@ class EditActivity : AppCompatActivity() {
         database.collection(COLLECTION_USERS).document(user).collection(COLLECTION_NOTES)
             .document(id!!).set(newData).addOnSuccessListener {
                 Log.d("TAG", "DocumentSnapshot successfully written!")
-                Toast.makeText(this, getString(R.string.save_success), Toast.LENGTH_LONG).show()
+                Toast.makeText(this, "登録が完了しました", Toast.LENGTH_LONG).show()
                 finish()
 
             }
             .addOnFailureListener { e ->
                 Log.w("TAG", "Error writing document", e)
-                Toast.makeText(this, getString(R.string.save_failure), Toast.LENGTH_LONG).show()
+                Toast.makeText(this, "登録ができませんでした", Toast.LENGTH_LONG).show()
             }
 
     }
