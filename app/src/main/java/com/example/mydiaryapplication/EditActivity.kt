@@ -17,9 +17,9 @@ import java.util.*
 class EditActivity : AppCompatActivity() {
 
     private var status: Status? = null
-    private var id: String? = ""
+    private var id: String? = null
 
-    lateinit var database: FirebaseFirestore
+    private val database = FirebaseFirestore.getInstance()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,7 +43,6 @@ class EditActivity : AppCompatActivity() {
         }
 
         if (status == Status.EDIT) {
-            val database = FirebaseFirestore.getInstance()
             val userId = FirebaseAuth.getInstance().currentUser!!.uid
 
             val docRef = database.collection(COLLECTION_USERS).document(userId)
@@ -67,31 +66,35 @@ class EditActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.menu_done -> {
-                checkIt()
+                if(isFilled()){
+                    save()
+                }
                 return true
             }
             else -> return super.onOptionsItemSelected(item)
         }
     }
 
-    private fun checkIt(): Boolean {
-        database = FirebaseFirestore.getInstance()
+    private fun save() {
 
         val title = input_edit_title.text.toString()
         val detail = input_edit_detail.text.toString()
 
-        if (title == "") {
-            input_title.error = "入力してください"
-            return false
-        }
-        if (detail == "") {
-            input_detail.error = "入力してください"
-            return false
-        }
-
         when (status) {
             Status.NEW_ENTRY -> addNewData(title, detail)
             Status.EDIT -> edit(title, detail)
+        }
+    }
+
+    private fun isFilled(): Boolean {
+
+        if ( input_edit_title.text.toString() == "") {
+            input_title.error = "入力してください"
+            return false
+        }
+        if ( input_edit_detail.text.toString() == "") {
+            input_detail.error = "入力してください"
+            return false
         }
         return true
     }

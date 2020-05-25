@@ -16,6 +16,9 @@ import kotlinx.android.synthetic.main.activity_list.*
 
 class ListActivity : AppCompatActivity() {
 
+    private val database = FirebaseFirestore.getInstance()
+    private val userId = FirebaseAuth.getInstance().currentUser!!.uid
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_list)
@@ -50,8 +53,6 @@ class ListActivity : AppCompatActivity() {
     }
 
     private fun showList() {
-        val database = FirebaseFirestore.getInstance()
-        val userId = FirebaseAuth.getInstance().currentUser!!.uid
 
         val list: MutableList<DocumentSnapshot>? = mutableListOf()
         database.collection(COLLECTION_USERS).document(userId).collection(COLLECTION_NOTES)
@@ -96,8 +97,6 @@ class ListActivity : AppCompatActivity() {
     }
 
     private fun deleteData(data: NoteDataWithId) {
-        val database = FirebaseFirestore.getInstance()
-        val userId = FirebaseAuth.getInstance().currentUser!!.uid
 
         AlertDialog.Builder(this@ListActivity).apply {
             setTitle("削除")
