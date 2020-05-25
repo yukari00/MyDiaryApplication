@@ -11,7 +11,6 @@ import androidx.databinding.DataBindingUtil
 import com.example.mydiaryapplication.databinding.ActivityDetailBinding
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
-import kotlinx.android.synthetic.main.activity_detail.*
 
 class DetailActivity : AppCompatActivity() {
 

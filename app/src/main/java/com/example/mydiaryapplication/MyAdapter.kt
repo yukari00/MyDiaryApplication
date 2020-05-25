@@ -1,11 +1,9 @@
 package com.example.mydiaryapplication
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.mydiaryapplication.databinding.RecyclerTextBinding
-import kotlinx.android.synthetic.main.recycler_text.view.*
 
 class MyAdapter(val data : List<NoteDataWithId>, val listener : OnClickNoteListener) : RecyclerView.Adapter<MyAdapter.MyViewHolder>() {
 
