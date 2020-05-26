@@ -8,9 +8,10 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
+import androidx.databinding.DataBindingUtil
+import com.example.mydiaryapplication.databinding.ActivityEditBinding
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
-import kotlinx.android.synthetic.main.activity_edit.*
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -20,13 +21,14 @@ class EditActivity : AppCompatActivity() {
     private var id: String? = null
 
     private val database = FirebaseFirestore.getInstance()
+    private lateinit var binding : ActivityEditBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_edit)
 
-        val toolbar = findViewById<androidx.appcompat.widget.Toolbar>(R.id.toolbar)
-        setSupportActionBar(toolbar)
+        binding = DataBindingUtil.setContentView<ActivityEditBinding>(this, R.layout.activity_edit)
+
+        setSupportActionBar(binding.toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         if (intent.extras == null) {
@@ -52,8 +54,8 @@ class EditActivity : AppCompatActivity() {
                 val title = it[NoteDataWithId.KEY_TITLE] as String
                 val detail = it[NoteDataWithId.KEY_DETAIL] as String
 
-                input_edit_title.setText(title)
-                input_edit_detail.setText(detail)
+                binding.inputEditTitle.setText(title)
+                binding.inputEditDetail.setText(detail)
             }
         }
     }
@@ -77,8 +79,8 @@ class EditActivity : AppCompatActivity() {
 
     private fun save() {
 
-        val title = input_edit_title.text.toString()
-        val detail = input_edit_detail.text.toString()
+        val title = binding.inputEditTitle.text.toString()
+        val detail = binding.inputEditDetail.text.toString()
 
         when (status) {
             Status.NEW_ENTRY -> addNewData(title, detail)
@@ -88,12 +90,12 @@ class EditActivity : AppCompatActivity() {
 
     private fun isFilled(): Boolean {
 
-        if ( input_edit_title.text.toString() == "") {
-            input_title.error = getString(R.string.enter_something)
+        if ( binding.inputEditTitle.text.toString() == "") {
+            binding.inputTitle.error = getString(R.string.enter_something)
             return false
         }
-        if ( input_edit_detail.text.toString() == "") {
-            input_detail.error = getString(R.string.enter_something)
+        if ( binding.inputEditDetail.text.toString() == "") {
+            binding.inputDetail.error = getString(R.string.enter_something)
             return false
         }
         return true
