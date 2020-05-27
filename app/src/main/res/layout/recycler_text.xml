@@ -4,8 +4,8 @@
 
     <data>
         <variable
-            name="noteDataWithId"
-            type="com.example.mydiaryapplication.NoteDataWithId"/>
+            name="noteData"
+            type="com.example.mydiaryapplication.NoteData"/>
 
     </data>
 
@@ -41,7 +41,7 @@
                     android:id="@+id/card_date"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@{noteDataWithId.date}"
+                    android:text=""
                     android:textSize="18sp"
                     tools:text="日付" />
 
@@ -50,7 +50,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
-                    android:text="@{noteDataWithId.title}"
+                    android:text="@{noteData.title}"
                     android:textSize="24sp"
                     tools:text="タイトル"/>
 

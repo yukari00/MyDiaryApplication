@@ -12,13 +12,12 @@ import androidx.databinding.DataBindingUtil
 import com.example.mydiaryapplication.databinding.ActivityEditBinding
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
-import java.text.SimpleDateFormat
 import java.util.*
 
 class EditActivity : AppCompatActivity() {
 
     private var status: Status? = null
-    private var id: String? = null
+    private var date: Date? = null
 
     private val database = FirebaseFirestore.getInstance()
     private lateinit var binding : ActivityEditBinding
@@ -37,8 +36,8 @@ class EditActivity : AppCompatActivity() {
         }
 
         val bundle = intent.extras!!
-        id = bundle.getString(INTENT_KEY_ID)
-        status = if(id == null){
+        date = bundle.get(INTENT_KEY_DATE) as Date
+        status = if(date == null){
             Status.NEW_ENTRY
         }else{
             Status.EDIT
@@ -46,13 +45,12 @@ class EditActivity : AppCompatActivity() {
 
         if (status == Status.EDIT) {
             val userId = FirebaseAuth.getInstance().currentUser!!.uid
-
             val docRef = database.collection(COLLECTION_USERS).document(userId)
-                .collection(COLLECTION_NOTES).document(id!!)
+                .collection(COLLECTION_NOTES).document(date.toString())
 
             docRef.get().addOnSuccessListener {
-                val title = it[NoteDataWithId.KEY_TITLE] as String
-                val detail = it[NoteDataWithId.KEY_DETAIL] as String
+                val title = it[NoteData.KEY_TITLE] as String
+                val detail = it[NoteData.KEY_DETAIL] as String
 
                 binding.inputEditTitle.setText(title)
                 binding.inputEditDetail.setText(detail)
@@ -104,11 +102,11 @@ class EditActivity : AppCompatActivity() {
     private fun addNewData(title: String, detail: String) {
 
         val user = FirebaseAuth.getInstance().currentUser!!.uid
-        val dateFormat = SimpleDateFormat(getString(R.string.simple_date_format))
-        val date = dateFormat.format(Date())
+        val newDate = Date()
 
-        val newData = NoteData(date, title, detail)
-        database.collection(COLLECTION_USERS).document(user).collection(COLLECTION_NOTES).add(newData)
+        val newData = NoteData(newDate, title, detail)
+        database.collection(COLLECTION_USERS).document(user).collection(COLLECTION_NOTES)
+            .document(newDate.toString()).set(newData)
             .addOnSuccessListener {
                 Log.d("TAG", "DocumentSnapshot successfully written!")
                 Toast.makeText(this, getString(R.string.save_success), Toast.LENGTH_LONG).show()
@@ -124,13 +122,11 @@ class EditActivity : AppCompatActivity() {
     private fun edit(title: String, detail: String) {
 
         val user = FirebaseAuth.getInstance().currentUser!!.uid
-        val dateFormat = SimpleDateFormat(getString(R.string.simple_date_format))
-        val date = dateFormat.format(Date())
 
         val newData = NoteData(date, title, detail)
 
         database.collection(COLLECTION_USERS).document(user).collection(COLLECTION_NOTES)
-            .document(id!!).set(newData).addOnSuccessListener {
+            .document(date.toString()).set(newData).addOnSuccessListener {
                 Log.d("TAG", "DocumentSnapshot successfully written!")
                 Toast.makeText(this, getString(R.string.save_success), Toast.LENGTH_LONG).show()
                 finish()
@@ -145,14 +141,14 @@ class EditActivity : AppCompatActivity() {
 
     companion object {
 
-        private const val INTENT_KEY_ID = "INTENT_KEY_ID"
+        private const val INTENT_KEY_DATE = "INTENT_KEY_DATE"
 
         private const val COLLECTION_USERS = "users"
         private const val COLLECTION_NOTES = "notes"
 
-        fun getLaunchIntent(from: Context, id: String?) =
+        fun getLaunchIntent(from: Context, date: Date?) =
             Intent(from, EditActivity::class.java).apply {
-                putExtra(INTENT_KEY_ID, id)
+                putExtra(INTENT_KEY_DATE, date)
             }
     }
 

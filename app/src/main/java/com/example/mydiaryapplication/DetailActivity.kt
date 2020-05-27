@@ -11,16 +11,18 @@ import androidx.databinding.DataBindingUtil
 import com.example.mydiaryapplication.databinding.ActivityDetailBinding
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import java.util.*
 
 class DetailActivity : AppCompatActivity() {
 
-    private var id: String? = null
+    private var date: Date? = null
     private lateinit var binding : ActivityDetailBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        binding = DataBindingUtil.setContentView<ActivityDetailBinding>(this, R.layout.activity_detail)
+        binding =
+            DataBindingUtil.setContentView<ActivityDetailBinding>(this, R.layout.activity_detail)
 
         setSupportActionBar(binding.toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
@@ -31,7 +33,7 @@ class DetailActivity : AppCompatActivity() {
         }
 
         val bundle = intent.extras!!
-        id = bundle.getString(INTENT_KEY_ID)
+        date = bundle.get(INTENT_KEY_DATE) as Date
 
     }
 
@@ -52,11 +54,12 @@ class DetailActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
+
         update()
     }
 
     private fun goEdit() {
-        startActivity(EditActivity.getLaunchIntent(this, id))
+        startActivity(EditActivity.getLaunchIntent(this, date))
     }
 
     private fun update() {
@@ -64,12 +67,11 @@ class DetailActivity : AppCompatActivity() {
         val userId = FirebaseAuth.getInstance().currentUser!!.uid
 
         val docRef = database.collection(COLLECTION_USERS).document(userId)
-            .collection(COLLECTION_NOTES).document(id!!)
+            .collection(COLLECTION_NOTES).document(date.toString())
 
         docRef.get().addOnSuccessListener {
-            val date = it[NoteDataWithId.KEY_DATE] as String
-            val title = it[NoteDataWithId.KEY_TITLE] as String
-            val detail = it[NoteDataWithId.KEY_DETAIL] as String
+            val title = it[NoteData.KEY_TITLE] as String?
+            val detail = it[NoteData.KEY_DETAIL] as String?
 
             val noteData = NoteData(date, title, detail)
             binding.noteData = noteData
@@ -80,14 +82,19 @@ class DetailActivity : AppCompatActivity() {
 
     companion object {
 
-        private const val INTENT_KEY_ID = "INTENT_KEY_ID"
+        private const val INTENT_KEY_DATE = "INTENT_KEY_DATE"
 
         private const val COLLECTION_USERS = "users"
         private const val COLLECTION_NOTES = "notes"
 
-        fun getLaunchIntent(from: Context, data: NoteDataWithId) =
+        fun getLaunchIntent(from: Context, data: NoteData) =
             Intent(from, DetailActivity::class.java).apply {
-                putExtra(INTENT_KEY_ID, data.id)
+                putExtra(INTENT_KEY_DATE, data.date)
+            }
+
+        fun getLaunchIntent(from: Context, date: Date?) =
+            Intent(from, DetailActivity::class.java).apply {
+                putExtra(INTENT_KEY_DATE, date)
             }
 
     }

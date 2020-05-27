@@ -31,8 +31,7 @@ class CalendarActivity : AppCompatActivity() {
             override fun OnClick(item: CalendarItem.Day) {
                 val date = item.date
                 if(date != null){
-                    val dateFormat = SimpleDateFormat("yyyy/MM/dd")
-                    val dateString = dateFormat.format(date)
+                    startActivity(DetailActivity.getLaunchIntent(this@CalendarActivity, date))
 
                 }
             }

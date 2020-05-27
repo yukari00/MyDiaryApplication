@@ -63,23 +63,22 @@ class ListActivity : AppCompatActivity() {
                     list?.add(document)
                 }
                 val newList = list?.map {
-                    NoteDataWithId(
-                        it.getString(NoteDataWithId.KEY_DATE),
-                        it.getString(NoteDataWithId.KEY_TITLE),
-                        it.getString(NoteDataWithId.KEY_DETAIL),
-                        it.id
+                    NoteData(
+                        it.getDate(NoteData.KEY_DATE),
+                        it.getString(NoteData.KEY_TITLE),
+                        it.getString(NoteData.KEY_DETAIL)
                     )
                 }
 
                 if (newList != null) {
                     val myAdapter = MyAdapter(newList,
                         object : MyAdapter.OnClickNoteListener {
-                            override fun OnClick(data: NoteDataWithId) {
+                            override fun OnClick(data: NoteData) {
                                 val intent = DetailActivity.getLaunchIntent(this@ListActivity, data)
                                 startActivity(intent)
                             }
 
-                            override fun OnLongClick(data: NoteDataWithId) {
+                            override fun OnLongClick(data: NoteData) {
                                 deleteData(data)
                             }
                         })
@@ -97,14 +96,14 @@ class ListActivity : AppCompatActivity() {
 
     }
 
-    private fun deleteData(data: NoteDataWithId) {
+    private fun deleteData(data: NoteData) {
 
         AlertDialog.Builder(this@ListActivity).apply {
             setTitle(getString(R.string.delete_title))
             setMessage(getString(R.string.delete_message))
             setPositiveButton(getString(R.string.yes)) { dialog, which ->
                 database.collection(COLLECTION_USERS).document(userId)
-                    .collection(COLLECTION_NOTES).document(data.id!!).delete()
+                    .collection(COLLECTION_NOTES).document(data.date.toString()).delete()
                     .addOnSuccessListener {
                         Toast.makeText(this@ListActivity, getString(R.string.delete_success_toast), Toast.LENGTH_SHORT).show()
                         showList()

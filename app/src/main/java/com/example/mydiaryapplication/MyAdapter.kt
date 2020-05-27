@@ -5,11 +5,11 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.mydiaryapplication.databinding.RecyclerTextBinding
 
-class MyAdapter(val data : List<NoteDataWithId>, val listener : OnClickNoteListener) : RecyclerView.Adapter<MyAdapter.MyViewHolder>() {
+class MyAdapter(val data : List<NoteData>, val listener : OnClickNoteListener) : RecyclerView.Adapter<MyAdapter.MyViewHolder>() {
 
     interface OnClickNoteListener {
-        fun OnClick(data : NoteDataWithId)
-        fun OnLongClick(data : NoteDataWithId)
+        fun OnClick(data : NoteData)
+        fun OnLongClick(data : NoteData)
     }
 
     class MyViewHolder(val binding : RecyclerTextBinding ) : RecyclerView.ViewHolder(binding.root)
@@ -27,7 +27,7 @@ class MyAdapter(val data : List<NoteDataWithId>, val listener : OnClickNoteListe
     override fun onBindViewHolder(holder: MyAdapter.MyViewHolder, position: Int) {
         val item = data[position]
 
-        holder.binding.noteDataWithId = item
+        holder.binding.noteData = item
         holder.binding.cardColor.setBackgroundResource(R.color.colorPrimary)
 
         holder.binding.cardView.setOnClickListener{
