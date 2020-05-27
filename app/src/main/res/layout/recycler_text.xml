@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <data>
         <variable
@@ -16,7 +17,12 @@
         <androidx.cardview.widget.CardView
             android:id="@+id/card_view"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:elevation="8dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginBottom="4dp"
+            android:layout_marginStart="12dp"
+            android:layout_marginEnd="12dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -29,7 +35,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@{noteDataWithId.date}"
-                    android:textSize="18sp" />
+                    android:textSize="18sp"
+                    tools:text="日付" />
 
                 <TextView
                     android:id="@+id/card_title"
@@ -37,7 +44,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
                     android:text="@{noteDataWithId.title}"
-                    android:textSize="24sp" />
+                    android:textSize="24sp"
+                    tools:text="タイトル"/>
 
             </LinearLayout>
         </androidx.cardview.widget.CardView>
