@@ -4,10 +4,18 @@ import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.recyclerview.widget.GridLayoutManager
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.android.synthetic.main.activity_calendar.*
+import kotlinx.android.synthetic.main.list_item_calendar.*
+import kotlinx.android.synthetic.main.list_item_calendar_header.*
+import java.text.SimpleDateFormat
+import java.time.Clock.offset
+import java.util.*
 
 class CalendarActivity : AppCompatActivity() {
+
+    private var offsetMonth = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -17,6 +25,42 @@ class CalendarActivity : AppCompatActivity() {
             signOut()
         }
 
+        val context = applicationContext ?: return
+
+        val calendarAdapter = CalendarAdapter()
+        calendar_recycler_view.apply {
+            adapter = calendarAdapter
+            layoutManager = GridLayoutManager(context, 7)
+        }
+        calendarAdapter.dataSource = CalendarItemFactory.create(offsetMonth)
+        updateDateLabel()
+
+        pre_button.setOnClickListener {
+            calendarAdapter.dataSource = CalendarItemFactory.create(--offsetMonth)
+            updateDateLabel()
+        }
+
+        next_button.setOnClickListener {
+            calendarAdapter.dataSource = CalendarItemFactory.create(++offsetMonth)
+            updateDateLabel()
+        }
+    }
+
+    private fun updateDateLabel() {
+        text_date.text = Date().apply {
+            offset( month = offsetMonth)}.toYearMonthText()
+    }
+
+    private fun Date.offset(year: Int = 0, month: Int = 0, day: Int = 0){
+        time = Calendar.getInstance().apply {
+            add(Calendar.YEAR, year)
+            add(Calendar.MONTH, month)
+            add(Calendar.DATE, day)
+        }.timeInMillis
+    }
+
+    private fun Date.toYearMonthText(): String {
+        return SimpleDateFormat("yyyy/MM").format(time)
     }
 
     private fun signOut() {
