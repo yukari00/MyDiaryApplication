@@ -17,7 +17,7 @@ class CalendarAdapter(val listener : OnClickCalendarListener) : RecyclerView.Ada
     }
 
     interface OnClickCalendarListener{
-        fun OnClick()
+        fun OnClick(item: CalendarItem.Day)
     }
 
     var dataSource: Array<CalendarItem> = emptyArray()
@@ -47,7 +47,7 @@ class CalendarAdapter(val listener : OnClickCalendarListener) : RecyclerView.Ada
             is CalendarItem.Day -> {
                 holder.setViewData(item)
                 holder.itemView.card_day.setOnClickListener {
-                    listener.OnClick()
+                    listener.OnClick(item)
                 }
             }
         }

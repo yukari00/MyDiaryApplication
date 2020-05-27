@@ -28,8 +28,13 @@ class CalendarActivity : AppCompatActivity() {
         val context = applicationContext ?: return
 
         val calendarAdapter = CalendarAdapter( object : CalendarAdapter.OnClickCalendarListener{
-            override fun OnClick() {
-               
+            override fun OnClick(item: CalendarItem.Day) {
+                val date = item.date
+                if(date != null){
+                    val dateFormat = SimpleDateFormat("yyyy/MM/dd")
+                    val dateString = dateFormat.format(date)
+
+                }
             }
         } )
         calendar_recycler_view.apply {
