@@ -9,11 +9,15 @@ import kotlinx.android.synthetic.main.list_item_calendar.view.*
 import kotlinx.android.synthetic.main.list_item_calendar_header.view.*
 import java.lang.IllegalStateException
 
-class CalendarAdapter : RecyclerView.Adapter<CalendarAdapter.BaseViewHolder>() {
+class CalendarAdapter(val listener : OnClickCalendarListener) : RecyclerView.Adapter<CalendarAdapter.BaseViewHolder>() {
 
     companion object{
         private const val VIEW_TYPE_HEADER = R.layout.list_item_calendar_header
         private const val VIEW_TYPE_DAY = R.layout.list_item_calendar
+    }
+
+    interface OnClickCalendarListener{
+        fun OnClick()
     }
 
     var dataSource: Array<CalendarItem> = emptyArray()
@@ -42,8 +46,13 @@ class CalendarAdapter : RecyclerView.Adapter<CalendarAdapter.BaseViewHolder>() {
             }
             is CalendarItem.Day -> {
                 holder.setViewData(item)
+                holder.itemView.card_day.setOnClickListener {
+                    listener.OnClick()
+                }
             }
         }
+
+
     }
 
     override fun getItemViewType(position: Int): Int {

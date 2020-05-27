@@ -27,7 +27,11 @@ class CalendarActivity : AppCompatActivity() {
 
         val context = applicationContext ?: return
 
-        val calendarAdapter = CalendarAdapter()
+        val calendarAdapter = CalendarAdapter( object : CalendarAdapter.OnClickCalendarListener{
+            override fun OnClick() {
+               
+            }
+        } )
         calendar_recycler_view.apply {
             adapter = calendarAdapter
             layoutManager = GridLayoutManager(context, 7)
