@@ -4,6 +4,8 @@ import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuItem
 import androidx.recyclerview.widget.GridLayoutManager
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.android.synthetic.main.activity_calendar.*
@@ -20,10 +22,7 @@ class CalendarActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_calendar)
-
-        button_signout.setOnClickListener {
-            signOut()
-        }
+        setSupportActionBar(toolbar)
 
         val context = applicationContext ?: return
 
@@ -51,6 +50,25 @@ class CalendarActivity : AppCompatActivity() {
         next_button.setOnClickListener {
             calendarAdapter.dataSource = CalendarItemFactory.create(++offsetMonth)
             updateDateLabel()
+        }
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.menu_calendar, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.menu_signout -> {
+                signOut()
+                return true
+            }
+            R.id.menu_list -> {
+                startActivity(ListActivity.getLaunchIntent(this))
+                return true
+            }
+            else -> return super.onOptionsItemSelected(item)
         }
     }
 

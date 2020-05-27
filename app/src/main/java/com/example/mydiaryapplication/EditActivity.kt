@@ -30,13 +30,8 @@ class EditActivity : AppCompatActivity() {
         setSupportActionBar(binding.toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        if (intent.extras == null) {
-            Toast.makeText(this, getString(R.string.error), Toast.LENGTH_LONG).show()
-            finish()
-        }
-
-        val bundle = intent.extras!!
-        date = bundle.get(INTENT_KEY_DATE) as Date
+        val bundle = intent.extras
+        date = bundle?.get(INTENT_KEY_DATE) as Date?
         status = if(date == null){
             Status.NEW_ENTRY
         }else{
@@ -150,6 +145,7 @@ class EditActivity : AppCompatActivity() {
             Intent(from, EditActivity::class.java).apply {
                 putExtra(INTENT_KEY_DATE, date)
             }
+
     }
 
 }

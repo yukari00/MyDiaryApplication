@@ -16,6 +16,7 @@ import java.util.*
 class DetailActivity : AppCompatActivity() {
 
     private var date: Date? = null
+    private var status: Status? = null
     private lateinit var binding : ActivityDetailBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -59,6 +60,9 @@ class DetailActivity : AppCompatActivity() {
     }
 
     private fun goEdit() {
+        if(status == Status.NEW_ENTRY){
+            startActivity(EditActivity.getLaunchIntent(this, null))
+        }
         startActivity(EditActivity.getLaunchIntent(this, date))
     }
 
@@ -72,6 +76,10 @@ class DetailActivity : AppCompatActivity() {
         docRef.get().addOnSuccessListener {
             val title = it[NoteData.KEY_TITLE] as String?
             val detail = it[NoteData.KEY_DETAIL] as String?
+
+            if(title == null && detail == null){
+                status = Status.NEW_ENTRY
+            }
 
             val noteData = NoteData(date, title, detail)
             binding.noteData = noteData
