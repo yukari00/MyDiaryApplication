@@ -28,6 +28,7 @@ class MyAdapter(val data : List<NoteDataWithId>, val listener : OnClickNoteListe
         val item = data[position]
 
         holder.binding.noteDataWithId = item
+        holder.binding.cardColor.setBackgroundResource(R.color.colorPrimary)
 
         holder.binding.cardView.setOnClickListener{
             listener.OnClick(item)
