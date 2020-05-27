@@ -22,7 +22,7 @@
 
     <!--SimpleDateFormat-->
     <string name="simple_date_format">yyyy年MM月dd日(E) HH:mm</string>
-    
+
     <!--登録-->
     <string name="save_success">登録が完了しました</string>
     <string name="save_failure">登録ができませんでした</string>

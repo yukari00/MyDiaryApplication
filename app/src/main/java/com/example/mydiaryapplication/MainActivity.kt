@@ -32,7 +32,7 @@ class MainActivity : AppCompatActivity() {
         firebaseAuth = FirebaseAuth.getInstance()
 
         if (firebaseAuth.currentUser != null) {
-            startActivity(ListActivity.getLaunchIntent(this))
+            startActivity(CalendarActivity.getLaunchIntent(this))
             finish()
         }
         configureGoogleSignIn()
@@ -76,7 +76,7 @@ class MainActivity : AppCompatActivity() {
         firebaseAuth.signInWithCredential(credential).addOnCompleteListener {
             if (it.isSuccessful) {
 
-                startActivity(ListActivity.getLaunchIntent(this))
+                startActivity(CalendarActivity.getLaunchIntent(this))
             } else {
                 Toast.makeText(this, "Firebase auth failed", Toast.LENGTH_LONG).show()
             }
