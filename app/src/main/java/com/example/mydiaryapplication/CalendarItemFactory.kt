@@ -1,6 +1,7 @@
 package com.example.mydiaryapplication
 
 import android.os.Build
+import android.util.Log
 import java.text.SimpleDateFormat
 import java.time.LocalDate
 import java.util.*
@@ -35,7 +36,7 @@ class CalendarItemFactory {
                 if (offsetMonth == 0 && i == currentDay) {
                     itemList.add(CalendarItem.Day("$i", Date(), true))
                 } else {
-                    val date = getDate(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), i)
+                    val date = getDate(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH) + 1, i)
                     itemList.add(CalendarItem.Day("$i", date))
                 }
             }
