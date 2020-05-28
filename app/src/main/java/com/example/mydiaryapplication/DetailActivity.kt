@@ -28,13 +28,14 @@ class DetailActivity : AppCompatActivity() {
         setSupportActionBar(binding.toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        if (intent.extras == null) {
+        val bundle = intent.extras
+        date = bundle?.get(INTENT_KEY_DATE) as Date?
+
+        if (date == null) {
             Toast.makeText(this, getString(R.string.error), Toast.LENGTH_LONG).show()
             finish()
         }
 
-        val bundle = intent.extras!!
-        date = bundle.get(INTENT_KEY_DATE) as Date
 
     }
 
@@ -60,10 +61,9 @@ class DetailActivity : AppCompatActivity() {
     }
 
     private fun goEdit() {
-        if(status == Status.NEW_ENTRY){
-            startActivity(EditActivity.getLaunchIntent(this, null))
-        }
-        startActivity(EditActivity.getLaunchIntent(this, date))
+
+        startActivity(EditActivity.getLaunchIntent(this, date, status!!))
+
     }
 
     private fun update() {
@@ -71,14 +71,16 @@ class DetailActivity : AppCompatActivity() {
         val userId = FirebaseAuth.getInstance().currentUser!!.uid
 
         val docRef = database.collection(COLLECTION_USERS).document(userId)
-            .collection(COLLECTION_NOTES).document(date.toString())
+            .collection(COLLECTION_NOTES).document(EditActivity.getId(date!!))
 
         docRef.get().addOnSuccessListener {
             val title = it[NoteData.KEY_TITLE] as String?
             val detail = it[NoteData.KEY_DETAIL] as String?
 
-            if(title == null && detail == null){
+            if(title == null && detail == null) {
                 status = Status.NEW_ENTRY
+            }else{
+                status = Status.EDIT
             }
 
             val noteData = NoteData(date, title, detail)

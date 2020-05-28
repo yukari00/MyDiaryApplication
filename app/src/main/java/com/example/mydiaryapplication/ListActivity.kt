@@ -14,6 +14,7 @@ import com.example.mydiaryapplication.databinding.ActivityListBinding
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
+import java.util.*
 
 class ListActivity : AppCompatActivity() {
 
@@ -28,7 +29,7 @@ class ListActivity : AppCompatActivity() {
         setSupportActionBar(binding.toolbar)
 
         binding.floatingButton.setOnClickListener {
-            startActivity(EditActivity.getLaunchIntent(this, null))
+            startActivity(EditActivity.getLaunchIntent(this, Date(), Status.NEW_ENTRY))
         }
     }
 
@@ -39,8 +40,8 @@ class ListActivity : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-            R.id.menu_signout -> {
-                signOut()
+            R.id.menu_calendar-> {
+                finish()
                 return true
             }
             else -> return super.onOptionsItemSelected(item)
@@ -103,7 +104,7 @@ class ListActivity : AppCompatActivity() {
             setMessage(getString(R.string.delete_message))
             setPositiveButton(getString(R.string.yes)) { dialog, which ->
                 database.collection(COLLECTION_USERS).document(userId)
-                    .collection(COLLECTION_NOTES).document(data.date.toString()).delete()
+                    .collection(COLLECTION_NOTES).document(EditActivity.getId(data.date!!)).delete()
                     .addOnSuccessListener {
                         Toast.makeText(this@ListActivity, getString(R.string.delete_success_toast), Toast.LENGTH_SHORT).show()
                         showList()

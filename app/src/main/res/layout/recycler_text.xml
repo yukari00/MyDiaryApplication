@@ -41,7 +41,7 @@
                     android:id="@+id/card_date"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text=""
+                    android:text="@{noteData.date.toString()}"
                     android:textSize="18sp"
                     tools:text="日付" />
 
