@@ -20,7 +20,7 @@ class ListActivity : AppCompatActivity() {
 
     private val database = FirebaseFirestore.getInstance()
     private val userId = FirebaseAuth.getInstance().currentUser!!.uid
-    private lateinit var binding : ActivityListBinding
+    private lateinit var binding: ActivityListBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,7 +40,7 @@ class ListActivity : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-            R.id.menu_calendar-> {
+            R.id.menu_calendar -> {
                 finish()
                 return true
             }
@@ -106,10 +106,18 @@ class ListActivity : AppCompatActivity() {
                 database.collection(COLLECTION_USERS).document(userId)
                     .collection(COLLECTION_NOTES).document(EditActivity.getId(data.date!!)).delete()
                     .addOnSuccessListener {
-                        Toast.makeText(this@ListActivity, getString(R.string.delete_success_toast), Toast.LENGTH_SHORT).show()
+                        Toast.makeText(
+                            this@ListActivity,
+                            getString(R.string.delete_success_toast),
+                            Toast.LENGTH_SHORT
+                        ).show()
                         showList()
                     }.addOnFailureListener {
-                        Toast.makeText(this@ListActivity, getString(R.string.delete_failure_toast), Toast.LENGTH_SHORT).show()
+                        Toast.makeText(
+                            this@ListActivity,
+                            getString(R.string.delete_failure_toast),
+                            Toast.LENGTH_SHORT
+                        ).show()
                     }
             }
             setNegativeButton(getString(R.string.no)) { dialog, which -> }

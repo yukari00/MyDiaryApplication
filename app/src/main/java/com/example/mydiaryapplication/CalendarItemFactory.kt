@@ -33,7 +33,7 @@ class CalendarItemFactory {
             // 有効日を埋める処理
             for (i in 1..dayOfMonth) {
                 if (offsetMonth == 0 && i == currentDay) {
-                    itemList.add(CalendarItem.Day("$i", Date(),true))
+                    itemList.add(CalendarItem.Day("$i", Date(), true))
                 } else {
                     val date = getDate(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), i)
                     itemList.add(CalendarItem.Day("$i", date))

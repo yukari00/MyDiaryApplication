@@ -17,7 +17,7 @@ class DetailActivity : AppCompatActivity() {
 
     private var date: Date? = null
     private var status: Status? = null
-    private lateinit var binding : ActivityDetailBinding
+    private lateinit var binding: ActivityDetailBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -77,9 +77,9 @@ class DetailActivity : AppCompatActivity() {
             val title = it[NoteData.KEY_TITLE] as String?
             val detail = it[NoteData.KEY_DETAIL] as String?
 
-            if(title == null && detail == null) {
+            if (title == null && detail == null) {
                 status = Status.NEW_ENTRY
-            }else{
+            } else {
                 status = Status.EDIT
             }
 

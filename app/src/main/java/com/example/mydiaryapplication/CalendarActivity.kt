@@ -26,15 +26,15 @@ class CalendarActivity : AppCompatActivity() {
 
         val context = applicationContext ?: return
 
-        val calendarAdapter = CalendarAdapter( object : CalendarAdapter.OnClickCalendarListener{
+        val calendarAdapter = CalendarAdapter(object : CalendarAdapter.OnClickCalendarListener {
             override fun OnClick(item: CalendarItem.Day) {
                 val date = item.date
-                if(date != null){
+                if (date != null) {
                     startActivity(DetailActivity.getLaunchIntent(this@CalendarActivity, date))
 
                 }
             }
-        } )
+        })
         calendar_recycler_view.apply {
             adapter = calendarAdapter
             layoutManager = GridLayoutManager(context, 7)
@@ -74,10 +74,11 @@ class CalendarActivity : AppCompatActivity() {
 
     private fun updateDateLabel() {
         text_date.text = Date().apply {
-            offset( month = offsetMonth)}.toYearMonthText()
+            offset(month = offsetMonth)
+        }.toYearMonthText()
     }
 
-    private fun Date.offset(year: Int = 0, month: Int = 0, day: Int = 0){
+    private fun Date.offset(year: Int = 0, month: Int = 0, day: Int = 0) {
         time = Calendar.getInstance().apply {
             add(Calendar.YEAR, year)
             add(Calendar.MONTH, month)

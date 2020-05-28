@@ -9,27 +9,40 @@ import kotlinx.android.synthetic.main.list_item_calendar.view.*
 import kotlinx.android.synthetic.main.list_item_calendar_header.view.*
 import java.lang.IllegalStateException
 
-class CalendarAdapter(val listener : OnClickCalendarListener) : RecyclerView.Adapter<CalendarAdapter.BaseViewHolder>() {
+class CalendarAdapter(val listener: OnClickCalendarListener) :
+    RecyclerView.Adapter<CalendarAdapter.BaseViewHolder>() {
 
-    companion object{
+    companion object {
         private const val VIEW_TYPE_HEADER = R.layout.list_item_calendar_header
         private const val VIEW_TYPE_DAY = R.layout.list_item_calendar
     }
 
-    interface OnClickCalendarListener{
+    interface OnClickCalendarListener {
         fun OnClick(item: CalendarItem.Day)
     }
 
     var dataSource: Array<CalendarItem> = emptyArray()
-    set(value){
-        field = value
-        notifyDataSetChanged()
-    }
+        set(value) {
+            field = value
+            notifyDataSetChanged()
+        }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseViewHolder {
-        return when(viewType){
-            VIEW_TYPE_HEADER -> CalendarHeaderViewHolder(LayoutInflater.from(parent.context).inflate(viewType, parent, false))
-            VIEW_TYPE_DAY -> CalendarDayViewHolder(LayoutInflater.from(parent.context).inflate(viewType, parent, false))
+        return when (viewType) {
+            VIEW_TYPE_HEADER -> CalendarHeaderViewHolder(
+                LayoutInflater.from(parent.context).inflate(
+                    viewType,
+                    parent,
+                    false
+                )
+            )
+            VIEW_TYPE_DAY -> CalendarDayViewHolder(
+                LayoutInflater.from(parent.context).inflate(
+                    viewType,
+                    parent,
+                    false
+                )
+            )
             else -> throw IllegalStateException("Bad view type!!")
         }
     }
@@ -40,7 +53,7 @@ class CalendarAdapter(val listener : OnClickCalendarListener) : RecyclerView.Ada
 
     override fun onBindViewHolder(holder: BaseViewHolder, position: Int) {
         val item = dataSource[position]
-        when(item){
+        when (item) {
             is CalendarItem.Header -> {
                 holder.setViewData(item)
             }
@@ -56,7 +69,7 @@ class CalendarAdapter(val listener : OnClickCalendarListener) : RecyclerView.Ada
     }
 
     override fun getItemViewType(position: Int): Int {
-        return when(dataSource[position]){
+        return when (dataSource[position]) {
             is CalendarItem.Header -> VIEW_TYPE_HEADER
             is CalendarItem.Day -> VIEW_TYPE_DAY
         }
@@ -67,29 +80,29 @@ class CalendarAdapter(val listener : OnClickCalendarListener) : RecyclerView.Ada
         abstract fun setViewData(item: CalendarItem)
     }
 
-    private class CalendarHeaderViewHolder(view: View) : BaseViewHolder(view){
+    private class CalendarHeaderViewHolder(view: View) : BaseViewHolder(view) {
         private val headerLabel: TextView = view.text_header
 
-        override fun setViewData(item: CalendarItem){
+        override fun setViewData(item: CalendarItem) {
             item as CalendarItem.Header
             headerLabel.text = item.text
         }
     }
 
-    private class CalendarDayViewHolder(view: View) : BaseViewHolder(view){
+    private class CalendarDayViewHolder(view: View) : BaseViewHolder(view) {
         private val dayLabel: TextView = view.text_day
 
         override fun setViewData(item: CalendarItem) {
             item as CalendarItem.Day
             dayLabel.text = item.day
-            dayLabel.visibility = if(item.day.isEmpty()){
+            dayLabel.visibility = if (item.day.isEmpty()) {
                 View.GONE
-            }else{
+            } else {
                 View.VISIBLE
             }
-            if(item.isToday){
+            if (item.isToday) {
                 itemView.setBackgroundResource(R.color.colorPrimary)
-            }else{
+            } else {
                 itemView.setBackgroundResource(R.color.colorWhite)
             }
         }

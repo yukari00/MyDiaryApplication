@@ -21,7 +21,7 @@ class EditActivity : AppCompatActivity() {
     private var date: Date? = null
 
     private val database = FirebaseFirestore.getInstance()
-    private lateinit var binding : ActivityEditBinding
+    private lateinit var binding: ActivityEditBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,7 +35,7 @@ class EditActivity : AppCompatActivity() {
         date = bundle?.get(INTENT_KEY_DATE) as Date?
         status = bundle?.get(INTENT_KEY_STATUS) as Status
 
-        if(date == null){
+        if (date == null) {
             Toast.makeText(this, getString(R.string.error), Toast.LENGTH_LONG).show()
             finish()
         }
@@ -63,7 +63,7 @@ class EditActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.menu_done -> {
-                if(isFilled()){
+                if (isFilled()) {
                     save()
                 }
                 return true
@@ -85,11 +85,11 @@ class EditActivity : AppCompatActivity() {
 
     private fun isFilled(): Boolean {
 
-        if ( binding.inputEditTitle.text.toString() == "") {
+        if (binding.inputEditTitle.text.toString() == "") {
             binding.inputTitle.error = getString(R.string.enter_something)
             return false
         }
-        if ( binding.inputEditDetail.text.toString() == "") {
+        if (binding.inputEditDetail.text.toString() == "") {
             binding.inputDetail.error = getString(R.string.enter_something)
             return false
         }
