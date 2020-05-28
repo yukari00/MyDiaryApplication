@@ -19,9 +19,8 @@ class CalendarItemFactory {
             calendar.add(Calendar.MONTH, offsetMonth)
             val dayOfMonth = calendar.getActualMaximum(Calendar.DATE)
             calendar.set(Calendar.DATE, 1)
-            val dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK)//SUNDAY(1), MONDAY(2)..
+            val dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK)
 
-            //Header
             arrayOf("日", "月", "火", "水", "木", "金", "土").forEach {
                 itemList.add(CalendarItem.Header(it))
             }
