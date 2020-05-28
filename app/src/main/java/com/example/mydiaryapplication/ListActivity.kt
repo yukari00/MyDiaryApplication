@@ -28,9 +28,6 @@ class ListActivity : AppCompatActivity() {
 
         setSupportActionBar(binding.toolbar)
 
-        binding.floatingButton.setOnClickListener {
-            startActivity(EditActivity.getLaunchIntent(this, Date(), Status.NEW_ENTRY))
-        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {

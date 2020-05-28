@@ -27,9 +27,12 @@ class MyAdapter(val data: List<NoteData>, val listener: OnClickNoteListener) :
 
     override fun onBindViewHolder(holder: MyAdapter.MyViewHolder, position: Int) {
         val item = data[position]
+        val date = EditActivity.getId(item.date!!)
 
-        holder.binding.noteData = item
-        holder.binding.cardColor.setBackgroundResource(R.color.colorPrimary)
+        val noteData : NoteDataString = NoteDataString(date, item.title, item.detail)
+        holder.binding.noteDataString = noteData
+
+        holder.binding.cardColor.setBackgroundResource(R.color.colorPurple)
 
         holder.binding.cardView.setOnClickListener {
             listener.OnClick(item)

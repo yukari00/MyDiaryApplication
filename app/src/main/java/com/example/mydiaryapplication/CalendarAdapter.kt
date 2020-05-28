@@ -3,8 +3,12 @@ package com.example.mydiaryapplication
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.android.synthetic.main.list_item_calendar.view.*
 import kotlinx.android.synthetic.main.list_item_calendar_header.view.*
 import java.lang.IllegalStateException
@@ -15,6 +19,9 @@ class CalendarAdapter(val listener: OnClickCalendarListener) :
     companion object {
         private const val VIEW_TYPE_HEADER = R.layout.list_item_calendar_header
         private const val VIEW_TYPE_DAY = R.layout.list_item_calendar
+
+        private const val COLLECTION_USERS = "users"
+        private const val COLLECTION_NOTES = "notes"
     }
 
     interface OnClickCalendarListener {
@@ -91,6 +98,7 @@ class CalendarAdapter(val listener: OnClickCalendarListener) :
 
     private class CalendarDayViewHolder(view: View) : BaseViewHolder(view) {
         private val dayLabel: TextView = view.text_day
+        private val check: ImageView = view.image_check
 
         override fun setViewData(item: CalendarItem) {
             item as CalendarItem.Day
@@ -101,10 +109,29 @@ class CalendarAdapter(val listener: OnClickCalendarListener) :
                 View.VISIBLE
             }
             if (item.isToday) {
-                itemView.setBackgroundResource(R.color.colorPrimary)
+                itemView.setBackgroundResource(R.color.colorPurple)
             } else {
                 itemView.setBackgroundResource(R.color.colorWhite)
             }
+
+            if (item.date != null) {
+                val database = FirebaseFirestore.getInstance()
+                val user = FirebaseAuth.getInstance().currentUser!!.uid
+                val docRef = database.collection(COLLECTION_USERS).document(user)
+                    .collection(COLLECTION_NOTES).document(EditActivity.getId(item.date))
+
+                docRef.get().addOnSuccessListener {
+                    val title = it[NoteData.KEY_TITLE] as String?
+                    val detail = it[NoteData.KEY_DETAIL] as String?
+
+                    if (title != null && detail != null) {
+                        check.setImageResource(R.drawable.ic_done_black_24dp)
+                    }
+
+                }
+            }
+
+
         }
     }
 

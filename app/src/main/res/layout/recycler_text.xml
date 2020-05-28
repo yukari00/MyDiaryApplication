@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools">
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
         <variable
-            name="noteData"
-            type="com.example.mydiaryapplication.NoteData"/>
+            name="noteDataString"
+            type="com.example.mydiaryapplication.NoteDataString"/>
 
     </data>
 
@@ -19,17 +20,17 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:elevation="8dp"
-            android:background="@drawable/card_background"
             android:layout_marginTop="4dp"
             android:layout_marginBottom="4dp"
             android:layout_marginStart="12dp"
-            android:layout_marginEnd="12dp">
+            android:layout_marginEnd="12dp"
+            app:cardCornerRadius="8dp">
 
             <TextView
                 android:id="@+id/card_color"
                 android:layout_width="match_parent"
                 android:layout_height="10dp"
-                android:background="@color/colorPrimary"/>
+                android:background="@color/colorPurple"/>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -41,7 +42,7 @@
                     android:id="@+id/card_date"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@{noteData.date.toString()}"
+                    android:text="@{noteDataString.date}"
                     android:textSize="18sp"
                     tools:text="日付" />
 
@@ -50,7 +51,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
-                    android:text="@{noteData.title}"
+                    android:text="@{noteDataString.title}"
                     android:textSize="24sp"
                     tools:text="タイトル"/>
 

@@ -83,8 +83,8 @@ class DetailActivity : AppCompatActivity() {
                 status = Status.EDIT
             }
 
-            val noteData = NoteData(date, title, detail)
-            binding.noteData = noteData
+            val noteDataString = NoteDataString(EditActivity.getId(date!!), title, detail)
+            binding.noteDataString = noteDataString
 
         }
 
