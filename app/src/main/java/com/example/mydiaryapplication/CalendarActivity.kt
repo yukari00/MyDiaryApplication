@@ -24,33 +24,8 @@ class CalendarActivity : AppCompatActivity() {
         setContentView(R.layout.activity_calendar)
         setSupportActionBar(toolbar)
 
-        val context = applicationContext ?: return
+        update()
 
-        val calendarAdapter = CalendarAdapter(object : CalendarAdapter.OnClickCalendarListener {
-            override fun OnClick(item: CalendarItem.Day) {
-                val date = item.date
-                if (date != null) {
-                    startActivity(DetailActivity.getLaunchIntent(this@CalendarActivity, date))
-
-                }
-            }
-        })
-        calendar_recycler_view.apply {
-            adapter = calendarAdapter
-            layoutManager = GridLayoutManager(context, 7)
-        }
-        calendarAdapter.dataSource = CalendarItemFactory.create(offsetMonth)
-        updateDateLabel()
-
-        pre_button.setOnClickListener {
-            calendarAdapter.dataSource = CalendarItemFactory.create(--offsetMonth)
-            updateDateLabel()
-        }
-
-        next_button.setOnClickListener {
-            calendarAdapter.dataSource = CalendarItemFactory.create(++offsetMonth)
-            updateDateLabel()
-        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -69,6 +44,41 @@ class CalendarActivity : AppCompatActivity() {
                 return true
             }
             else -> return super.onOptionsItemSelected(item)
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        update()
+    }
+
+    private fun update(){
+        val context = applicationContext ?: return
+
+        val calendarAdapter = CalendarAdapter(object : CalendarAdapter.OnClickCalendarListener {
+            override fun OnClick(item: CalendarItem.Day) {
+                val date = item.date
+                if (date != null) {
+                    startActivity(DetailActivity.getLaunchIntent(this@CalendarActivity, date))
+                }
+            }
+        })
+        calendar_recycler_view.apply {
+            adapter = calendarAdapter
+            layoutManager = GridLayoutManager(context, 7)
+        }
+        calendarAdapter.dataSource = CalendarItemFactory.create(offsetMonth)
+        updateDateLabel()
+
+        pre_button.setOnClickListener {
+            calendarAdapter.dataSource = CalendarItemFactory.create(--offsetMonth)
+            updateDateLabel()
+        }
+
+        next_button.setOnClickListener {
+            calendarAdapter.dataSource = CalendarItemFactory.create(++offsetMonth)
+            updateDateLabel()
         }
     }
 

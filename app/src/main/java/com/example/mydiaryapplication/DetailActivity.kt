@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.databinding.DataBindingUtil
 import com.example.mydiaryapplication.databinding.ActivityDetailBinding
 import com.google.firebase.auth.FirebaseAuth
@@ -18,6 +19,11 @@ class DetailActivity : AppCompatActivity() {
     private var date: Date? = null
     private var status: Status? = null
     private lateinit var binding: ActivityDetailBinding
+
+    private var noteData: NoteData? = null
+
+    private val database = FirebaseFirestore.getInstance()
+    private val userId = FirebaseAuth.getInstance().currentUser!!.uid
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -50,6 +56,13 @@ class DetailActivity : AppCompatActivity() {
                 goEdit()
                 return true
             }
+            R.id.menu_delete ->{
+                if(noteData?.title != null && noteData?.detail != null) {
+                    deleteData(noteData!!)
+                }
+                Toast.makeText(this, "データがないので削除できません", Toast.LENGTH_SHORT).show()
+                return true
+            }
             else -> return super.onOptionsItemSelected(item)
         }
     }
@@ -67,8 +80,6 @@ class DetailActivity : AppCompatActivity() {
     }
 
     private fun update() {
-        val database = FirebaseFirestore.getInstance()
-        val userId = FirebaseAuth.getInstance().currentUser!!.uid
 
         val docRef = database.collection(COLLECTION_USERS).document(userId)
             .collection(COLLECTION_NOTES).document(EditActivity.getId(date!!))
@@ -83,11 +94,40 @@ class DetailActivity : AppCompatActivity() {
                 status = Status.EDIT
             }
 
+            noteData = NoteData(date, title, detail)
             val noteDataString = NoteDataString(EditActivity.getId(date!!), title, detail)
             binding.noteDataString = noteDataString
 
         }
 
+    }
+
+    private fun deleteData(data: NoteData) {
+
+        AlertDialog.Builder(this).apply {
+            setTitle(getString(R.string.delete_title))
+            setMessage(getString(R.string.delete_message))
+            setPositiveButton(getString(R.string.yes)) { dialog, which ->
+                database.collection(COLLECTION_USERS).document(userId)
+                    .collection(COLLECTION_NOTES).document(EditActivity.getId(data.date!!)).delete()
+                    .addOnSuccessListener {
+                        Toast.makeText(
+                            this@DetailActivity,
+                            getString(R.string.delete_success_toast),
+                            Toast.LENGTH_SHORT
+                        ).show()
+                        update()
+                    }.addOnFailureListener {
+                        Toast.makeText(
+                            this@DetailActivity,
+                            getString(R.string.delete_failure_toast),
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+            }
+            setNegativeButton(getString(R.string.no)) { dialog, which -> }
+            show()
+        }
     }
 
     companion object {
