@@ -14,10 +14,10 @@ class CalendarItemFactory {
 
         fun create(offsetMonth: Int): Array<CalendarItem> {
             val itemList: MutableList<CalendarItem> = arrayListOf()
-            val calendar = Calendar.getInstance() //カレンダー取得
-            val currentDay = calendar.get(Calendar.DATE) //今日の日付(10日、3日)
-            calendar.add(Calendar.MONTH, offsetMonth) //今月(1 -> 2月、 3 -> 4月)
-            val dayOfMonth = calendar.getActualMaximum(Calendar.DATE)//当日は何日？
+            val calendar = Calendar.getInstance()
+            val currentDay = calendar.get(Calendar.DATE)
+            calendar.add(Calendar.MONTH, offsetMonth)
+            val dayOfMonth = calendar.getActualMaximum(Calendar.DATE)
             calendar.set(Calendar.DATE, 1)
             val dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK)//SUNDAY(1), MONDAY(2)..
 
@@ -27,20 +27,20 @@ class CalendarItemFactory {
             }
             val headerSize = itemList.size
 
-            //　開始日までを埋める処理
             for (i in 1 until dayOfWeek) {
                 itemList.add(CalendarItem.Day("", null))
             }
-            // 有効日を埋める処理
+
             for (i in 1..dayOfMonth) {
                 if (offsetMonth == 0 && i == currentDay) {
                     itemList.add(CalendarItem.Day("$i", Date(), true))
                 } else {
-                    val date = getDate(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH) + 1, i)
+                    val date =
+                        getDate(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH) + 1, i)
                     itemList.add(CalendarItem.Day("$i", date))
                 }
             }
-            // 余りセルを埋める処理
+
             val fillSize = (MAX_ROW * NUM_WEEK + headerSize) - itemList.size
             for (i in 0 until fillSize) {
                 itemList.add(CalendarItem.Day("", null))
