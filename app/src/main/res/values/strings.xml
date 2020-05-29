@@ -9,6 +9,7 @@
     <!--エラー時-->
     <string name="error">エラーが発生しました</string>
     <string name="enter_something">入力してください</string>
+    <string name="delete_no_data_error">データがないので削除できません</string>
 
     <!--削除AlertDialog-->
     <string name="delete_title">削除</string>

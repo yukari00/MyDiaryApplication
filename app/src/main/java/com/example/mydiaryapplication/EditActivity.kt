@@ -36,7 +36,7 @@ class EditActivity : AppCompatActivity() {
         status = bundle?.get(INTENT_KEY_STATUS) as Status
 
         if (date == null) {
-            Toast.makeText(this, getString(R.string.error), Toast.LENGTH_LONG).show()
+            toast(getString(R.string.error))
             finish()
         }
 
@@ -105,13 +105,13 @@ class EditActivity : AppCompatActivity() {
             .document(getId(date!!)).set(newData)
             .addOnSuccessListener {
                 Log.d("TAG", "DocumentSnapshot successfully written!")
-                Toast.makeText(this, getString(R.string.save_success), Toast.LENGTH_LONG).show()
+                toast(getString(R.string.save_success))
                 finish()
 
             }
             .addOnFailureListener { e ->
                 Log.w("TAG", "Error writing document", e)
-                Toast.makeText(this, getString(R.string.save_failure), Toast.LENGTH_LONG).show()
+                toast(getString(R.string.save_failure))
             }
     }
 
@@ -124,15 +124,19 @@ class EditActivity : AppCompatActivity() {
         database.collection(COLLECTION_USERS).document(user).collection(COLLECTION_NOTES)
             .document(getId(date!!)).set(newData).addOnSuccessListener {
                 Log.d("TAG", "DocumentSnapshot successfully written!")
-                Toast.makeText(this, getString(R.string.save_success), Toast.LENGTH_LONG).show()
+                toast(getString(R.string.save_success))
                 finish()
 
             }
             .addOnFailureListener { e ->
                 Log.w("TAG", "Error writing document", e)
-                Toast.makeText(this, getString(R.string.save_failure), Toast.LENGTH_LONG).show()
+                toast(getString(R.string.save_failure))
             }
 
+    }
+
+    private fun toast(message: String){
+        Toast.makeText(this, message, Toast.LENGTH_LONG).show()
     }
 
     companion object {
@@ -143,8 +147,8 @@ class EditActivity : AppCompatActivity() {
         private const val COLLECTION_USERS = "users"
         private const val COLLECTION_NOTES = "notes"
 
-        fun getLaunchIntent(from: Context, date: Date?, status: Status) =
-            Intent(from, EditActivity::class.java).apply {
+        fun getLaunchIntent(context: Context, date: Date?, status: Status) =
+            Intent(context, EditActivity::class.java).apply {
                 putExtra(INTENT_KEY_DATE, date)
                 putExtra(INTENT_KEY_STATUS, status)
             }

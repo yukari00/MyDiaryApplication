@@ -17,12 +17,13 @@
         android:id="@+id/text_day"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="TextView"
+        android:text=""
         android:textSize="24sp"/>
 
         <ImageView
             android:id="@+id/image_check"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            android:layout_margin="12dp"/>
 </LinearLayout>
 </androidx.cardview.widget.CardView>

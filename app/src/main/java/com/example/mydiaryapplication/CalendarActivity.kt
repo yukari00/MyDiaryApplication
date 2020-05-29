@@ -4,13 +4,17 @@ import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import androidx.recyclerview.widget.GridLayoutManager
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.DocumentSnapshot
+import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.android.synthetic.main.activity_calendar.*
 import kotlinx.android.synthetic.main.list_item_calendar.*
 import kotlinx.android.synthetic.main.list_item_calendar_header.*
+import java.lang.reflect.Array.set
 import java.text.SimpleDateFormat
 import java.time.Clock.offset
 import java.util.*
@@ -19,12 +23,13 @@ class CalendarActivity : AppCompatActivity() {
 
     private var offsetMonth = 0
 
+    private val database = FirebaseFirestore.getInstance()
+    private val userId = FirebaseAuth.getInstance().currentUser!!.uid
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_calendar)
         setSupportActionBar(toolbar)
-
-        update()
 
     }
 
@@ -53,32 +58,53 @@ class CalendarActivity : AppCompatActivity() {
         update()
     }
 
-    private fun update(){
-        val context = applicationContext ?: return
+    private fun update() {
 
-        val calendarAdapter = CalendarAdapter(object : CalendarAdapter.OnClickCalendarListener {
-            override fun OnClick(item: CalendarItem.Day) {
-                val date = item.date
-                if (date != null) {
-                    startActivity(DetailActivity.getLaunchIntent(this@CalendarActivity, date))
+        val list: MutableList<DocumentSnapshot>? = mutableListOf()
+        database.collection(COLLECTION_USERS).document(userId).collection(COLLECTION_NOTES)
+            .get().addOnSuccessListener { result ->
+                for (document in result) {
+                    Log.d("CHECK THIS", "${document.id} => ${document.data}")
+                    list?.add(document)
+                }
+                val newList = list?.map {
+                    NoteData(
+                        it.getDate(NoteData.KEY_DATE),
+                        it.getString(NoteData.KEY_TITLE),
+                        it.getString(NoteData.KEY_DETAIL)
+                    )
+                }
+
+                val calendarAdapter =
+                    CalendarAdapter(newList, object : CalendarAdapter.OnClickCalendarListener {
+                        override fun OnClick(item: CalendarItem.Day) {
+                            goDetail(item)
+                        }
+                    })
+                calendar_recycler_view.apply {
+                    adapter = calendarAdapter
+                    layoutManager = GridLayoutManager(this@CalendarActivity, 7)
+                }
+                calendarAdapter.dataSource = CalendarItemFactory.create(offsetMonth)
+                updateDateLabel()
+
+                pre_button.setOnClickListener {
+                    calendarAdapter.dataSource = CalendarItemFactory.create(--offsetMonth)
+                    updateDateLabel()
+                }
+
+                next_button.setOnClickListener {
+                    calendarAdapter.dataSource = CalendarItemFactory.create(++offsetMonth)
+                    updateDateLabel()
                 }
             }
-        })
-        calendar_recycler_view.apply {
-            adapter = calendarAdapter
-            layoutManager = GridLayoutManager(context, 7)
-        }
-        calendarAdapter.dataSource = CalendarItemFactory.create(offsetMonth)
-        updateDateLabel()
 
-        pre_button.setOnClickListener {
-            calendarAdapter.dataSource = CalendarItemFactory.create(--offsetMonth)
-            updateDateLabel()
-        }
+    }
 
-        next_button.setOnClickListener {
-            calendarAdapter.dataSource = CalendarItemFactory.create(++offsetMonth)
-            updateDateLabel()
+    private fun goDetail(item: CalendarItem.Day) {
+        val date = item.date
+        if (date != null) {
+            startActivity(DetailActivity.getLaunchIntent(this@CalendarActivity, date))
         }
     }
 
@@ -106,7 +132,11 @@ class CalendarActivity : AppCompatActivity() {
     }
 
     companion object {
-        fun getLaunchIntent(from: Context) = Intent(from, CalendarActivity::class.java).apply {
+
+        private const val COLLECTION_USERS = "users"
+        private const val COLLECTION_NOTES = "notes"
+
+        fun getLaunchIntent(context: Context) = Intent(context, CalendarActivity::class.java).apply {
             addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
         }
     }

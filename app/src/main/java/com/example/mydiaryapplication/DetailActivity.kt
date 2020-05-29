@@ -41,8 +41,6 @@ class DetailActivity : AppCompatActivity() {
             Toast.makeText(this, getString(R.string.error), Toast.LENGTH_LONG).show()
             finish()
         }
-
-
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -59,8 +57,9 @@ class DetailActivity : AppCompatActivity() {
             R.id.menu_delete ->{
                 if(noteData?.title != null && noteData?.detail != null) {
                     deleteData(noteData!!)
+                }else {
+                    toast(getString(R.string.delete_no_data_error))
                 }
-                Toast.makeText(this, "データがないので削除できません", Toast.LENGTH_SHORT).show()
                 return true
             }
             else -> return super.onOptionsItemSelected(item)
@@ -108,26 +107,26 @@ class DetailActivity : AppCompatActivity() {
             setTitle(getString(R.string.delete_title))
             setMessage(getString(R.string.delete_message))
             setPositiveButton(getString(R.string.yes)) { dialog, which ->
-                database.collection(COLLECTION_USERS).document(userId)
-                    .collection(COLLECTION_NOTES).document(EditActivity.getId(data.date!!)).delete()
-                    .addOnSuccessListener {
-                        Toast.makeText(
-                            this@DetailActivity,
-                            getString(R.string.delete_success_toast),
-                            Toast.LENGTH_SHORT
-                        ).show()
-                        update()
-                    }.addOnFailureListener {
-                        Toast.makeText(
-                            this@DetailActivity,
-                            getString(R.string.delete_failure_toast),
-                            Toast.LENGTH_SHORT
-                        ).show()
-                    }
+                setPositiveButton(data)
             }
             setNegativeButton(getString(R.string.no)) { dialog, which -> }
             show()
         }
+    }
+
+    private fun setPositiveButton(data: NoteData) {
+        database.collection(COLLECTION_USERS).document(userId)
+            .collection(COLLECTION_NOTES).document(EditActivity.getId(data.date!!)).delete()
+            .addOnSuccessListener {
+                toast(getString(R.string.delete_success_toast))
+                update()
+            }.addOnFailureListener {
+                toast(getString(R.string.delete_failure_toast))
+            }
+    }
+
+    private fun toast(message: String) {
+        Toast.makeText(this@DetailActivity, message, Toast.LENGTH_SHORT).show()
     }
 
     companion object {
@@ -137,13 +136,13 @@ class DetailActivity : AppCompatActivity() {
         private const val COLLECTION_USERS = "users"
         private const val COLLECTION_NOTES = "notes"
 
-        fun getLaunchIntent(from: Context, data: NoteData) =
-            Intent(from, DetailActivity::class.java).apply {
+        fun getLaunchIntent(context: Context, data: NoteData) =
+            Intent(context, DetailActivity::class.java).apply {
                 putExtra(INTENT_KEY_DATE, data.date)
             }
 
-        fun getLaunchIntent(from: Context, date: Date?) =
-            Intent(from, DetailActivity::class.java).apply {
+        fun getLaunchIntent(context: Context, date: Date?) =
+            Intent(context, DetailActivity::class.java).apply {
                 putExtra(INTENT_KEY_DATE, date)
             }
 
