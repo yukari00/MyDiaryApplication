@@ -71,8 +71,6 @@ class CalendarAdapter(val listener: OnClickCalendarListener) :
                 }
             }
         }
-
-
     }
 
     override fun getItemViewType(position: Int): Int {
