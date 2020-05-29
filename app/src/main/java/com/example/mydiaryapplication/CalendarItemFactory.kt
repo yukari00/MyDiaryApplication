@@ -30,9 +30,12 @@ class CalendarItemFactory {
                 itemList.add(CalendarItem.Day("", null))
             }
 
+
             for (i in 1..dayOfMonth) {
                 if (offsetMonth == 0 && i == currentDay) {
-                    itemList.add(CalendarItem.Day("$i", Date(), true))
+                    val date =
+                        getDate(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH) + 1, i)
+                    itemList.add(CalendarItem.Day("$i", date, true))
                 } else {
                     val date =
                         getDate(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH) + 1, i)
