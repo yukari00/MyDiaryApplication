@@ -3,8 +3,8 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
-        android:id="@+id/menu_signout"
-        android:icon="@drawable/ic_exit_to_app_black_24dp"
-        android:title="Signout"
+        android:id="@+id/menu_calendar"
+        android:icon="@drawable/ic_date_range_black_24dp"
+        android:title="menu_calendar"
         app:showAsAction="always" />
 </menu>

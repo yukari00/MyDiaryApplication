@@ -9,6 +9,7 @@
     <!--エラー時-->
     <string name="error">エラーが発生しました</string>
     <string name="enter_something">入力してください</string>
+    <string name="delete_no_data_error">データがないので削除できません</string>
 
     <!--削除AlertDialog-->
     <string name="delete_title">削除</string>
@@ -22,7 +23,7 @@
 
     <!--SimpleDateFormat-->
     <string name="simple_date_format">yyyy年MM月dd日(E) HH:mm</string>
-    
+
     <!--登録-->
     <string name="save_success">登録が完了しました</string>
     <string name="save_failure">登録ができませんでした</string>

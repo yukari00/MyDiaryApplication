@@ -5,8 +5,8 @@
 
     <data>
         <variable
-            name="noteData"
-            type="com.example.mydiaryapplication.NoteData" />
+            name="noteDataString"
+            type="com.example.mydiaryapplication.NoteDataString" />
 
     </data>
 
@@ -20,25 +20,29 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/colorPrimary"
-            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-            app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
+            android:background="#FFFFFFFF"
+            android:layout_margin="16dp"
+            android:elevation="8dp"/>
 
         <TextView
             android:id="@+id/detail_date"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="8dp"
-            android:text="@{noteData.date}"
-            android:textSize="18sp" />
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:text="@{noteDataString.date}"
+            android:textAlignment="textEnd"
+            android:textSize="18sp"
+            tools:text="日付" />
 
         <TextView
             android:id="@+id/detail_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="16dp"
-            android:text="@{noteData.title}"
-            android:textSize="24sp" />
+            android:text="@{noteDataString.title}"
+            android:textSize="24sp"
+            tools:text="タイトル"/>
 
         <TextView
             android:id="@+id/detail_detail"
@@ -48,8 +52,9 @@
             android:layout_marginTop="0dp"
             android:layout_marginRight="16dp"
             android:layout_marginBottom="16dp"
-            android:text="@{noteData.detail}"
-            android:textSize="18sp" />
+            android:text="@{noteDataString.detail}"
+            android:textSize="18sp"
+            tools:text="テキスト内容"/>
 
     </LinearLayout>
 </layout>

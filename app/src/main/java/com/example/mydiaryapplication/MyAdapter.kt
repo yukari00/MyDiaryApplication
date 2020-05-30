@@ -5,14 +5,15 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.mydiaryapplication.databinding.RecyclerTextBinding
 
-class MyAdapter(val data : List<NoteDataWithId>, val listener : OnClickNoteListener) : RecyclerView.Adapter<MyAdapter.MyViewHolder>() {
+class MyAdapter(val data: List<NoteData>, val listener: OnClickNoteListener) :
+    RecyclerView.Adapter<MyAdapter.MyViewHolder>() {
 
     interface OnClickNoteListener {
-        fun OnClick(data : NoteDataWithId)
-        fun OnLongClick(data : NoteDataWithId)
+        fun OnClick(data: NoteData)
+        fun OnLongClick(data: NoteData)
     }
 
-    class MyViewHolder(val binding : RecyclerTextBinding ) : RecyclerView.ViewHolder(binding.root)
+    class MyViewHolder(val binding: RecyclerTextBinding) : RecyclerView.ViewHolder(binding.root)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyAdapter.MyViewHolder {
         val layoutInflater = LayoutInflater.from(parent.context)
@@ -26,13 +27,17 @@ class MyAdapter(val data : List<NoteDataWithId>, val listener : OnClickNoteListe
 
     override fun onBindViewHolder(holder: MyAdapter.MyViewHolder, position: Int) {
         val item = data[position]
+        val dateId = EditActivity.getId(item.date!!)
 
-        holder.binding.noteDataWithId = item
+        val noteData : NoteDataString = NoteDataString(dateId, item.title, item.detail)
+        holder.binding.noteDataString = noteData
 
-        holder.binding.cardView.setOnClickListener{
+        holder.binding.cardColor.setBackgroundResource(R.color.colorPurple)
+
+        holder.binding.cardView.setOnClickListener {
             listener.OnClick(item)
         }
-        holder.binding.cardView.setOnLongClickListener{
+        holder.binding.cardView.setOnLongClickListener {
             listener.OnLongClick(item)
             true
         }

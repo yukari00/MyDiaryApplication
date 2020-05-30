@@ -19,7 +19,7 @@ class ListActivity : AppCompatActivity() {
 
     private val database = FirebaseFirestore.getInstance()
     private val userId = FirebaseAuth.getInstance().currentUser!!.uid
-    private lateinit var binding : ActivityListBinding
+    private lateinit var binding: ActivityListBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -27,9 +27,6 @@ class ListActivity : AppCompatActivity() {
 
         setSupportActionBar(binding.toolbar)
 
-        binding.floatingButton.setOnClickListener {
-            startActivity(EditActivity.getLaunchIntent(this, null))
-        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -39,8 +36,8 @@ class ListActivity : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-            R.id.menu_signout -> {
-                signOut()
+            R.id.menu_calendar -> {
+                finish()
                 return true
             }
             else -> return super.onOptionsItemSelected(item)
@@ -54,72 +51,72 @@ class ListActivity : AppCompatActivity() {
     }
 
     private fun showList() {
-
-        val list: MutableList<DocumentSnapshot>? = mutableListOf()
+        val snapshotList: MutableList<DocumentSnapshot> = mutableListOf()
         database.collection(COLLECTION_USERS).document(userId).collection(COLLECTION_NOTES)
             .get().addOnSuccessListener { result ->
                 for (document in result) {
                     Log.d("CHECK THIS", "${document.id} => ${document.data}")
-                    list?.add(document)
+                    snapshotList.add(document)
                 }
-                val newList = list?.map {
-                    NoteDataWithId(
-                        it.getString(NoteDataWithId.KEY_DATE),
-                        it.getString(NoteDataWithId.KEY_TITLE),
-                        it.getString(NoteDataWithId.KEY_DETAIL),
-                        it.id
-                    )
-                }
-
-                if (newList != null) {
-                    val myAdapter = MyAdapter(newList,
-                        object : MyAdapter.OnClickNoteListener {
-                            override fun OnClick(data: NoteDataWithId) {
-                                val intent = DetailActivity.getLaunchIntent(this@ListActivity, data)
-                                startActivity(intent)
-                            }
-
-                            override fun OnLongClick(data: NoteDataWithId) {
-                                deleteData(data)
-                            }
-                        })
-                    val manager = LinearLayoutManager(this)
-                    binding.recyclerView.apply {
-                        setHasFixedSize(true)
-                        layoutManager = manager
-                        adapter = myAdapter
-                    }
-                }
+                connectRecyclerView(snapshotList)
             }
             .addOnFailureListener { exception ->
                 Log.d("CHECK THIS", "Error getting documents: ", exception)
             }
-
     }
 
-    private fun deleteData(data: NoteDataWithId) {
+    private fun connectRecyclerView(snapshotList: MutableList<DocumentSnapshot>) {
+        val noteDataList = snapshotList.map {
+            NoteData(
+                it.getDate(NoteData.KEY_DATE),
+                it.getString(NoteData.KEY_TITLE),
+                it.getString(NoteData.KEY_DETAIL)
+            )
+        }
+        val myAdapter = MyAdapter(noteDataList,
+            object : MyAdapter.OnClickNoteListener {
+                override fun OnClick(data: NoteData) {
+                    startActivity(DetailActivity.getLaunchIntent(this@ListActivity, data))
+                }
+                override fun OnLongClick(data: NoteData) {
+                    deleteData(data)
+                }
+            })
+        val manager = LinearLayoutManager(this)
+        binding.recyclerView.apply {
+            setHasFixedSize(true)
+            layoutManager = manager
+            adapter = myAdapter
+        }
+    }
+
+    private fun deleteData(data: NoteData) {
 
         AlertDialog.Builder(this@ListActivity).apply {
             setTitle(getString(R.string.delete_title))
             setMessage(getString(R.string.delete_message))
             setPositiveButton(getString(R.string.yes)) { dialog, which ->
-                database.collection(COLLECTION_USERS).document(userId)
-                    .collection(COLLECTION_NOTES).document(data.id!!).delete()
-                    .addOnSuccessListener {
-                        Toast.makeText(this@ListActivity, getString(R.string.delete_success_toast), Toast.LENGTH_SHORT).show()
-                        showList()
-                    }.addOnFailureListener {
-                        Toast.makeText(this@ListActivity, getString(R.string.delete_failure_toast), Toast.LENGTH_SHORT).show()
-                    }
+                setPositiveButton(data)
             }
             setNegativeButton(getString(R.string.no)) { dialog, which -> }
             show()
         }
+
     }
 
-    private fun signOut() {
-        startActivity(MainActivity.getLaunchIntent(this))
-        FirebaseAuth.getInstance().signOut();
+    private fun setPositiveButton(data: NoteData) {
+        database.collection(COLLECTION_USERS).document(userId)
+            .collection(COLLECTION_NOTES).document(EditActivity.getId(data.date!!)).delete()
+            .addOnSuccessListener {
+                toast(getString(R.string.delete_success_toast))
+                showList()
+            }.addOnFailureListener {
+                toast(getString(R.string.delete_failure_toast))
+            }
+    }
+
+    private fun toast(message: String) {
+        Toast.makeText(this@ListActivity, message, Toast.LENGTH_SHORT).show()
     }
 
     companion object {
@@ -127,8 +124,6 @@ class ListActivity : AppCompatActivity() {
         private const val COLLECTION_USERS = "users"
         private const val COLLECTION_NOTES = "notes"
 
-        fun getLaunchIntent(from: Context) = Intent(from, ListActivity::class.java).apply {
-            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
-        }
+        fun getLaunchIntent(context: Context) = Intent(context, ListActivity::class.java)
     }
 }

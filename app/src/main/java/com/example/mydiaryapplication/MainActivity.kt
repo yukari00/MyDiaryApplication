@@ -32,7 +32,7 @@ class MainActivity : AppCompatActivity() {
         firebaseAuth = FirebaseAuth.getInstance()
 
         if (firebaseAuth.currentUser != null) {
-            startActivity(ListActivity.getLaunchIntent(this))
+            startActivity(CalendarActivity.getLaunchIntent(this))
             finish()
         }
         configureGoogleSignIn()
@@ -76,7 +76,7 @@ class MainActivity : AppCompatActivity() {
         firebaseAuth.signInWithCredential(credential).addOnCompleteListener {
             if (it.isSuccessful) {
 
-                startActivity(ListActivity.getLaunchIntent(this))
+                startActivity(CalendarActivity.getLaunchIntent(this))
             } else {
                 Toast.makeText(this, "Firebase auth failed", Toast.LENGTH_LONG).show()
             }
@@ -85,7 +85,7 @@ class MainActivity : AppCompatActivity() {
 
 
     companion object {
-        fun getLaunchIntent(from: Context) = Intent(from, MainActivity::class.java).apply {
+        fun getLaunchIntent(context: Context) = Intent(context, MainActivity::class.java).apply {
             addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
         }
     }

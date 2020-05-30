@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/menu_list"
+        android:icon="@drawable/ic_format_list_bulleted_black_24dp"
+        android:title="GoList"
+        app:showAsAction="always"/>
+    <item
+        android:id="@+id/menu_signout"
+        android:icon="@drawable/ic_exit_to_app_black_24dp"
+        android:title="Signout"
+        app:showAsAction="always" />
+
+</menu>

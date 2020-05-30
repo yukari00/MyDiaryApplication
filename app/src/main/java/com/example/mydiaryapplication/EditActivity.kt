@@ -18,10 +18,10 @@ import java.util.*
 class EditActivity : AppCompatActivity() {
 
     private var status: Status? = null
-    private var id: String? = null
+    private var date: Date? = null
 
     private val database = FirebaseFirestore.getInstance()
-    private lateinit var binding : ActivityEditBinding
+    private lateinit var binding: ActivityEditBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,28 +31,23 @@ class EditActivity : AppCompatActivity() {
         setSupportActionBar(binding.toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        if (intent.extras == null) {
-            Toast.makeText(this, getString(R.string.error), Toast.LENGTH_LONG).show()
-            finish()
-        }
+        val bundle = intent.extras
+        date = bundle?.get(INTENT_KEY_DATE) as Date?
+        status = bundle?.get(INTENT_KEY_STATUS) as Status
 
-        val bundle = intent.extras!!
-        id = bundle.getString(INTENT_KEY_ID)
-        status = if(id == null){
-            Status.NEW_ENTRY
-        }else{
-            Status.EDIT
+        if (date == null) {
+            toast(getString(R.string.error))
+            finish()
         }
 
         if (status == Status.EDIT) {
             val userId = FirebaseAuth.getInstance().currentUser!!.uid
-
             val docRef = database.collection(COLLECTION_USERS).document(userId)
-                .collection(COLLECTION_NOTES).document(id!!)
+                .collection(COLLECTION_NOTES).document(getId(date!!))
 
             docRef.get().addOnSuccessListener {
-                val title = it[NoteDataWithId.KEY_TITLE] as String
-                val detail = it[NoteDataWithId.KEY_DETAIL] as String
+                val title = it.getString(NoteData.KEY_TITLE)
+                val detail = it.getString(NoteData.KEY_DETAIL)
 
                 binding.inputEditTitle.setText(title)
                 binding.inputEditDetail.setText(detail)
@@ -68,7 +63,7 @@ class EditActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.menu_done -> {
-                if(isFilled()){
+                if (isFilled()) {
                     save()
                 }
                 return true
@@ -90,11 +85,11 @@ class EditActivity : AppCompatActivity() {
 
     private fun isFilled(): Boolean {
 
-        if ( binding.inputEditTitle.text.toString() == "") {
+        if (binding.inputEditTitle.text.toString() == "") {
             binding.inputTitle.error = getString(R.string.enter_something)
             return false
         }
-        if ( binding.inputEditDetail.text.toString() == "") {
+        if (binding.inputEditDetail.text.toString() == "") {
             binding.inputDetail.error = getString(R.string.enter_something)
             return false
         }
@@ -104,56 +99,67 @@ class EditActivity : AppCompatActivity() {
     private fun addNewData(title: String, detail: String) {
 
         val user = FirebaseAuth.getInstance().currentUser!!.uid
-        val dateFormat = SimpleDateFormat(getString(R.string.simple_date_format))
-        val date = dateFormat.format(Date())
 
         val newData = NoteData(date, title, detail)
-        database.collection(COLLECTION_USERS).document(user).collection(COLLECTION_NOTES).add(newData)
+        database.collection(COLLECTION_USERS).document(user).collection(COLLECTION_NOTES)
+            .document(getId(date!!)).set(newData)
             .addOnSuccessListener {
                 Log.d("TAG", "DocumentSnapshot successfully written!")
-                Toast.makeText(this, getString(R.string.save_success), Toast.LENGTH_LONG).show()
+                toast(getString(R.string.save_success))
                 finish()
 
             }
             .addOnFailureListener { e ->
                 Log.w("TAG", "Error writing document", e)
-                Toast.makeText(this, getString(R.string.save_failure), Toast.LENGTH_LONG).show()
+                toast(getString(R.string.save_failure))
             }
     }
 
     private fun edit(title: String, detail: String) {
 
         val user = FirebaseAuth.getInstance().currentUser!!.uid
-        val dateFormat = SimpleDateFormat(getString(R.string.simple_date_format))
-        val date = dateFormat.format(Date())
 
         val newData = NoteData(date, title, detail)
 
         database.collection(COLLECTION_USERS).document(user).collection(COLLECTION_NOTES)
-            .document(id!!).set(newData).addOnSuccessListener {
+            .document(getId(date!!)).set(newData).addOnSuccessListener {
                 Log.d("TAG", "DocumentSnapshot successfully written!")
-                Toast.makeText(this, getString(R.string.save_success), Toast.LENGTH_LONG).show()
+                toast(getString(R.string.save_success))
                 finish()
 
             }
             .addOnFailureListener { e ->
                 Log.w("TAG", "Error writing document", e)
-                Toast.makeText(this, getString(R.string.save_failure), Toast.LENGTH_LONG).show()
+                toast(getString(R.string.save_failure))
             }
 
     }
 
+    private fun toast(message: String){
+        Toast.makeText(this, message, Toast.LENGTH_LONG).show()
+    }
+
     companion object {
 
-        private const val INTENT_KEY_ID = "INTENT_KEY_ID"
+        private const val INTENT_KEY_DATE = "INTENT_KEY_DATE"
+        private const val INTENT_KEY_STATUS = "INTENT_KEY_STATUS"
 
         private const val COLLECTION_USERS = "users"
         private const val COLLECTION_NOTES = "notes"
 
-        fun getLaunchIntent(from: Context, id: String?) =
-            Intent(from, EditActivity::class.java).apply {
-                putExtra(INTENT_KEY_ID, id)
+        fun getLaunchIntent(context: Context, date: Date?, status: Status) =
+            Intent(context, EditActivity::class.java).apply {
+                putExtra(INTENT_KEY_DATE, date)
+                putExtra(INTENT_KEY_STATUS, status)
             }
+
+        fun getId(date: Date): String {
+            val dateFormat = SimpleDateFormat("yyyy.MM.dd")
+            val dateString = dateFormat.format(date)
+
+            return dateString
+        }
+
     }
 
 }
