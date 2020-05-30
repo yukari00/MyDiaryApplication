@@ -32,11 +32,12 @@
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="5"
+                    android:elevation="12dp"
                     android:fontFamily="serif-monospace"
+                    android:gravity="center"
                     android:text="あなたの毎日をのこします"
                     android:textColor="@color/colorGray"
-                    android:textSize="24sp"
-                    android:elevation="12dp"/>
+                    android:textSize="24sp" />
             </LinearLayout>
 
             <TextView
