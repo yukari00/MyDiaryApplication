@@ -3,10 +3,11 @@ package com.example.mydiaryapplication
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import kotlinx.android.synthetic.main.list_item_calendar.view.*
+import com.example.mydiaryapplication.databinding.ListItemCalendarBinding
+import com.example.mydiaryapplication.databinding.ListItemCalendarHeaderBinding
 import java.lang.IllegalStateException
 
-class CalendarAdapter(val noteData: List<NoteData>, val listener: OnClickCalendarListener) :
+class CalendarAdapter(var noteData: List<NoteData>, val listener: OnClickCalendarListener) :
     RecyclerView.Adapter<BaseViewHolder>() {
 
     companion object {
@@ -25,21 +26,19 @@ class CalendarAdapter(val noteData: List<NoteData>, val listener: OnClickCalenda
         }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseViewHolder {
-        return when (viewType) {
-            VIEW_TYPE_HEADER -> CalendarHeaderViewHolder(
-                LayoutInflater.from(parent.context).inflate(
-                    viewType,
-                    parent,
-                    false
-                )
-            )
-            VIEW_TYPE_DAY -> CalendarDayViewHolder(
-                LayoutInflater.from(parent.context).inflate(
-                    viewType,
-                    parent,
-                    false
-                )
-            )
+        when (viewType) {
+            VIEW_TYPE_HEADER -> {
+                val layoutInflater = LayoutInflater.from(parent.context)
+                val binding = ListItemCalendarHeaderBinding.inflate(layoutInflater, parent, false)
+
+                return CalendarHeaderViewHolder(binding)
+            }
+            VIEW_TYPE_DAY -> {
+                val layoutInflater = LayoutInflater.from(parent.context)
+                val binding = ListItemCalendarBinding.inflate(layoutInflater, parent, false)
+
+                return CalendarDayViewHolder(binding)
+            }
             else -> throw IllegalStateException("Bad view type!!")
         }
     }
@@ -52,13 +51,11 @@ class CalendarAdapter(val noteData: List<NoteData>, val listener: OnClickCalenda
         val item = dataSource[position]
         when (item) {
             is CalendarItem.Header -> {
-                holder.setViewData(item, null)
+                holder.setViewData(item, listener, emptyList())
             }
             is CalendarItem.Day -> {
-                holder.setViewData(item, noteData)
-                holder.itemView.card_day.setOnClickListener {
-                    listener.OnClick(item)
-                }
+                holder.setViewData(item, listener, noteData)
+
             }
         }
     }

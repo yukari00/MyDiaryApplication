@@ -7,16 +7,13 @@ import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.GridLayoutManager
+import com.example.mydiaryapplication.databinding.ActivityCalendarBinding
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
-import kotlinx.android.synthetic.main.activity_calendar.*
-import kotlinx.android.synthetic.main.list_item_calendar.*
-import kotlinx.android.synthetic.main.list_item_calendar_header.*
-import java.lang.reflect.Array.set
 import java.text.SimpleDateFormat
-import java.time.Clock.offset
 import java.util.*
 
 class CalendarActivity : AppCompatActivity() {
@@ -26,10 +23,12 @@ class CalendarActivity : AppCompatActivity() {
     private val database = FirebaseFirestore.getInstance()
     private val userId = FirebaseAuth.getInstance().currentUser!!.uid
 
+    private lateinit var binding : ActivityCalendarBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_calendar)
-        setSupportActionBar(toolbar)
+        binding = DataBindingUtil.setContentView<ActivityCalendarBinding>(this, R.layout.activity_calendar)
+        setSupportActionBar(binding.toolbar)
 
     }
 
@@ -81,19 +80,19 @@ class CalendarActivity : AppCompatActivity() {
                             goDetail(item)
                         }
                     })
-                calendar_recycler_view.apply {
+                binding.calendarRecyclerView.apply {
                     adapter = calendarAdapter
                     layoutManager = GridLayoutManager(this@CalendarActivity, 7)
                 }
                 calendarAdapter.dataSource = CalendarItemFactory.create(offsetMonth)
                 updateDateLabel()
 
-                pre_button.setOnClickListener {
+                binding.preButton.setOnClickListener {
                     calendarAdapter.dataSource = CalendarItemFactory.create(--offsetMonth)
                     updateDateLabel()
                 }
 
-                next_button.setOnClickListener {
+                binding.nextButton.setOnClickListener {
                     calendarAdapter.dataSource = CalendarItemFactory.create(++offsetMonth)
                     updateDateLabel()
                 }
@@ -109,7 +108,7 @@ class CalendarActivity : AppCompatActivity() {
     }
 
     private fun updateDateLabel() {
-        text_date.text = Date().apply {
+        binding.textDate.text = Date().apply {
             offset(month = offsetMonth)
         }.toYearMonthText()
     }
