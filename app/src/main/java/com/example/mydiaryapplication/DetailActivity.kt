@@ -84,8 +84,8 @@ class DetailActivity : AppCompatActivity() {
             .collection(COLLECTION_NOTES).document(EditActivity.getId(date!!))
 
         docRef.get().addOnSuccessListener {
-            val title = it[NoteData.KEY_TITLE] as String?
-            val detail = it[NoteData.KEY_DETAIL] as String?
+            val title = it.getString(NoteData.KEY_TITLE)
+            val detail = it.getString(NoteData.KEY_DETAIL)
 
             if (title == null && detail == null) {
                 status = Status.NEW_ENTRY

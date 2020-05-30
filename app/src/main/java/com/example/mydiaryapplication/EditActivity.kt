@@ -46,8 +46,8 @@ class EditActivity : AppCompatActivity() {
                 .collection(COLLECTION_NOTES).document(getId(date!!))
 
             docRef.get().addOnSuccessListener {
-                val title = it[NoteData.KEY_TITLE] as String
-                val detail = it[NoteData.KEY_DETAIL] as String
+                val title = it.getString(NoteData.KEY_TITLE)
+                val detail = it.getString(NoteData.KEY_DETAIL)
 
                 binding.inputEditTitle.setText(title)
                 binding.inputEditDetail.setText(detail)
