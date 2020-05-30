@@ -1,9 +1,6 @@
 package com.example.mydiaryapplication
 
-import android.os.Build
-import android.util.Log
 import java.text.SimpleDateFormat
-import java.time.LocalDate
 import java.util.*
 
 class CalendarItemFactory {
