@@ -6,7 +6,7 @@ import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.list_item_calendar.view.*
 import java.lang.IllegalStateException
 
-class CalendarAdapter(val noteData: List<NoteData>?, val listener: OnClickCalendarListener) :
+class CalendarAdapter(val noteData: List<NoteData>, val listener: OnClickCalendarListener) :
     RecyclerView.Adapter<BaseViewHolder>() {
 
     companion object {

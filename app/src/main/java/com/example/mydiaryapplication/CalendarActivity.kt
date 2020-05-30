@@ -60,14 +60,14 @@ class CalendarActivity : AppCompatActivity() {
 
     private fun update() {
 
-        val list: MutableList<DocumentSnapshot>? = mutableListOf()
+        val snapshotList: MutableList<DocumentSnapshot> = mutableListOf()
         database.collection(COLLECTION_USERS).document(userId).collection(COLLECTION_NOTES)
             .get().addOnSuccessListener { result ->
                 for (document in result) {
                     Log.d("CHECK THIS", "${document.id} => ${document.data}")
-                    list?.add(document)
+                    snapshotList.add(document)
                 }
-                val newList = list?.map {
+                val noteDataList = snapshotList.map {
                     NoteData(
                         it.getDate(NoteData.KEY_DATE),
                         it.getString(NoteData.KEY_TITLE),
@@ -76,7 +76,7 @@ class CalendarActivity : AppCompatActivity() {
                 }
 
                 val calendarAdapter =
-                    CalendarAdapter(newList, object : CalendarAdapter.OnClickCalendarListener {
+                    CalendarAdapter(noteDataList, object : CalendarAdapter.OnClickCalendarListener {
                         override fun OnClick(item: CalendarItem.Day) {
                             goDetail(item)
                         }

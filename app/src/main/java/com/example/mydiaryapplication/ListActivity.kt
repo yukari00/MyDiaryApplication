@@ -51,12 +51,12 @@ class ListActivity : AppCompatActivity() {
     }
 
     private fun showList() {
-        val snapshotList: MutableList<DocumentSnapshot>? = mutableListOf()
+        val snapshotList: MutableList<DocumentSnapshot> = mutableListOf()
         database.collection(COLLECTION_USERS).document(userId).collection(COLLECTION_NOTES)
             .get().addOnSuccessListener { result ->
                 for (document in result) {
                     Log.d("CHECK THIS", "${document.id} => ${document.data}")
-                    snapshotList?.add(document)
+                    snapshotList.add(document)
                 }
                 connectRecyclerView(snapshotList)
             }
@@ -65,30 +65,28 @@ class ListActivity : AppCompatActivity() {
             }
     }
 
-    private fun connectRecyclerView(snapshotList: MutableList<DocumentSnapshot>?) {
-        val noteDataList = snapshotList?.map {
+    private fun connectRecyclerView(snapshotList: MutableList<DocumentSnapshot>) {
+        val noteDataList = snapshotList.map {
             NoteData(
                 it.getDate(NoteData.KEY_DATE),
                 it.getString(NoteData.KEY_TITLE),
                 it.getString(NoteData.KEY_DETAIL)
             )
         }
-        if (noteDataList != null) {
-            val myAdapter = MyAdapter(noteDataList,
-                object : MyAdapter.OnClickNoteListener {
-                    override fun OnClick(data: NoteData) {
-                        startActivity(DetailActivity.getLaunchIntent(this@ListActivity, data))
-                    }
-                    override fun OnLongClick(data: NoteData) {
-                        deleteData(data)
-                    }
-                })
-            val manager = LinearLayoutManager(this)
-            binding.recyclerView.apply {
-                setHasFixedSize(true)
-                layoutManager = manager
-                adapter = myAdapter
-            }
+        val myAdapter = MyAdapter(noteDataList,
+            object : MyAdapter.OnClickNoteListener {
+                override fun OnClick(data: NoteData) {
+                    startActivity(DetailActivity.getLaunchIntent(this@ListActivity, data))
+                }
+                override fun OnLongClick(data: NoteData) {
+                    deleteData(data)
+                }
+            })
+        val manager = LinearLayoutManager(this)
+        binding.recyclerView.apply {
+            setHasFixedSize(true)
+            layoutManager = manager
+            adapter = myAdapter
         }
     }
 
