@@ -30,6 +30,7 @@ class EditActivity : AppCompatActivity() {
 
         setSupportActionBar(binding.toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.setDisplayShowTitleEnabled(false)
 
         val bundle = intent.extras
         date = bundle?.get(INTENT_KEY_DATE) as Date?

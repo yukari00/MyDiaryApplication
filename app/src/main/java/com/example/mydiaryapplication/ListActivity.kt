@@ -26,6 +26,7 @@ class ListActivity : AppCompatActivity() {
         binding = DataBindingUtil.setContentView<ActivityListBinding>(this, R.layout.activity_list)
 
         setSupportActionBar(binding.toolbar)
+        supportActionBar?.setDisplayShowTitleEnabled(false)
 
     }
 
